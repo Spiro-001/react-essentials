@@ -1,29 +1,28 @@
 import React, { forwardRef, MouseEvent } from "react";
-import "./BasicButton.css";
+import "./AdvanceButton.css";
 
 type AdvanceButtonProps = {
   bStyle?: Record<string, string>;
   onClick(): void;
   value?: string;
-  aSettings?: Record<string, any>;
   children?: React.ReactNode;
 };
 
 export const AdvanceButton = forwardRef<HTMLDivElement, AdvanceButtonProps>(
   function AdvanceButton(
-    { bStyle, onClick, value, aSettings, children }: AdvanceButtonProps,
+    { bStyle, onClick, value, children }: AdvanceButtonProps,
     ref
   ) {
     const bClickAnim = (element: MouseEvent<HTMLDivElement>) => {
-      return onClick();
+      onClick();
     };
 
     return (
       <div
         style={bStyle}
         onClick={bClickAnim}
-        ref={ref}
         className="basic-button"
+        ref={ref}
       >
         {value ? value : children}
       </div>

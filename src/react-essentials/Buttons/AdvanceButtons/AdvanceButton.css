@@ -1,0 +1,16 @@
+.basic-button {
+    color: black;
+    border: 1px solid black;
+    border-radius: 4px;
+
+    padding: 12px 24px;
+    background-color: white;
+
+    transition-property: filter;
+    transition-duration: 0.2s;
+}
+
+.basic-button:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+}
