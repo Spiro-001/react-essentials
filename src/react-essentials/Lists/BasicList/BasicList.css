@@ -1,0 +1,12 @@
+.basic-list {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0px;
+    gap: 12px 0px;
+    border: 1px solid black;
+}
+
+.list-item {
+    padding: 12px 24px;
+    border: 1px solid black;
+}

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButton";
 import "./App.css";
@@ -20,8 +20,8 @@ function App() {
     console.log("Basic Button");
   };
 
-  const handleListA = () => {
-    console.log(1);
+  const handleListA = (e: any, manageList?: any, list?: Record<any, any>) => {
+    manageList({ 1: "dog", 2: "cat" });
   };
 
   return (
