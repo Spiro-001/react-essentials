@@ -29,9 +29,9 @@ export const BasicList = ({
     <div style={bStyle} className="basic-list">
       {children
         ? children
-        : Object.keys(listObjects).map((order) => {
+        : Object.keys(listObjects).map((order, idx) => {
             return (
-              <span onClick={lClick} className="list-item">
+              <span onClick={lClick} className="list-item" key={idx} id={order}>
                 {listObjects[parseInt(order)]}
               </span>
             );

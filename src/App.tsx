@@ -4,6 +4,7 @@ import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButto
 import "./App.css";
 import { useOnClickOutside } from "./react-essentials/Hooks/onClickOutside";
 import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
+import { deleteListItem } from "./react-essentials/Hooks/deleteListItem";
 
 function App() {
   const aButtonRef = useRef<HTMLDivElement>(null);
@@ -20,8 +21,12 @@ function App() {
     console.log("Basic Button");
   };
 
-  const handleListA = (e: any, manageList?: any, list?: Record<any, any>) => {
-    manageList({ 1: "dog", 2: "cat" });
+  const handleListA = (
+    event: any,
+    manageList?: any,
+    list?: Record<number, string>
+  ) => {
+    deleteListItem(event, manageList, list);
   };
 
   return (
