@@ -3,6 +3,7 @@ import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/Advance
 import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButton";
 import "./App.css";
 import { useOnClickOutside } from "./react-essentials/Hooks/onClickOutside";
+import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
 
 function App() {
   const aButtonRef = useRef<HTMLDivElement>(null);
@@ -19,6 +20,10 @@ function App() {
     console.log("Basic Button");
   };
 
+  const handleListA = () => {
+    console.log(1);
+  };
+
   return (
     <div className="App">
       <BasicButton onClick={handleClickB} value="Basic Button" />
@@ -26,6 +31,10 @@ function App() {
         onClick={handleClickA}
         value="Advanced Button"
         ref={aButtonRef}
+      />
+      <BasicList
+        onClick={handleListA}
+        listObjectsProp={{ 1: "bob", 2: "charles" }}
       />
     </div>
   );

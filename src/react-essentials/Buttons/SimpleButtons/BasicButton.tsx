@@ -14,12 +14,12 @@ export const BasicButton = ({
   value,
   children,
 }: BasicButtonProps) => {
-  const bClickAnim = (element: MouseEvent<HTMLDivElement>) => {
+  const bClick = (element: MouseEvent<HTMLDivElement>) => {
     return onClick();
   };
 
   return (
-    <div style={bStyle} onClick={bClickAnim} className="basic-button">
+    <div style={bStyle} onClick={bClick} className="basic-button">
       {value ? value : children}
     </div>
   );
