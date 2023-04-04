@@ -1,12 +1,14 @@
 .basic-list {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     padding: 12px 0px;
     gap: 12px 0px;
     border: 1px solid black;
+    min-height: 47px;
 }
 
 .list-item {
     padding: 12px 24px;
-    border: 1px solid black;
+    overflow: hidden;
 }

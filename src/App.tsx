@@ -23,10 +23,10 @@ function App() {
 
   const handleListA = (
     event: any,
-    manageList?: any,
-    list?: Record<number, string>
+    list: Record<number, string>,
+    manageList?: any
   ) => {
-    deleteListItem(event, manageList, list);
+    deleteListItem(event, list, manageList);
   };
 
   return (
@@ -39,7 +39,7 @@ function App() {
       />
       <BasicList
         onClick={handleListA}
-        listObjectsProp={{ 1: "bob", 2: "charles" }}
+        listObjectsProp={{ 1: "bob", 2: "charles", 3: "doggy", 4: "mark" }}
       />
     </div>
   );

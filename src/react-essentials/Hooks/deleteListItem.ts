@@ -1,10 +1,14 @@
 export function deleteListItem(
   event: any,
-  manageList: React.Dispatch<React.SetStateAction<Record<number, string>>>,
-  list: Record<number, string> | undefined
+  list: Record<number, string>,
+  manageList?: React.Dispatch<React.SetStateAction<Record<number, string>>>
 ) {
   const selectedElement = parseInt(event.target.id);
-  const currentListObject = structuredClone(list);
-  delete currentListObject[selectedElement];
-  manageList(currentListObject);
+  if (manageList) {
+    const currentListObject = structuredClone(list);
+    delete currentListObject[selectedElement];
+    manageList(currentListObject);
+  } else {
+    delete list[selectedElement];
+  }
 }
