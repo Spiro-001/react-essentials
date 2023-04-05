@@ -43,6 +43,7 @@ export const BasicList = ({
   const [action, setAction] = useState<Record<string, boolean>>({
     delete: false,
     new: false,
+    deleteFromExternal: false,
   });
 
   const bListRef = useRef<Record<string, HTMLSpanElement | null>>({});
@@ -52,7 +53,7 @@ export const BasicList = ({
     parseInt(
       Object.keys(listObjectsProp)[Object.keys(listObjectsProp).length - 1]
     )
-  ); // LAST KEY ORDER
+  );
 
   const defaultStyle = {
     minHeight: "300px",
@@ -77,13 +78,18 @@ export const BasicList = ({
               setListObjectsProp ? setListObjectsProp : setListObjects
             );
             setAction((prevAction) => {
-              return { ...prevAction, delete: false };
+              return {
+                ...prevAction,
+                delete: false,
+                deleteFromExternal: false,
+              };
             });
+            listLength.current -= 1;
           },
         })
       );
       setAction((prevAction) => {
-        return { ...prevAction, delete: true };
+        return { ...prevAction, delete: true, deleteFromExternal: false };
       });
     }
   };
@@ -125,14 +131,16 @@ export const BasicList = ({
       newItemFadeIn.progress(1).reverse();
     } else if (listLength.current > newObjectListLength) {
       // item removed
+      setAction((prevAction) => {
+        return { ...prevAction, deleteFromExternal: true };
+      });
       listLength.current -= 1;
     }
+
     if (newObjectListLength === 0) {
       noItemFadeIn.progress(1);
       noItemFadeIn.reverse();
     }
-
-    console.log(lastIndex, listLength.current, bListKeys, bListRef.current);
   }, [setListObjectsProp ? listObjectsProp : listObjects]);
 
   const listElement = (idx: number, order: string) => {
@@ -157,17 +165,40 @@ export const BasicList = ({
     children
   ) {
     return (
-      <div
-        style={bStyle ? bStyle : defaultStyle}
-        className="basic-list"
-        ref={bListDivRef}
-      >
-        {children
-          ? children
-          : Object.keys(listObjectsProp).map((order, idx) => {
-              return listElement(idx, order);
-            })}
-      </div>
+      <>
+        <div
+          style={bStyle ? bStyle : defaultStyle}
+          className="basic-list"
+          ref={bListDivRef}
+        >
+          {children
+            ? children
+            : Object.keys(listObjectsProp).map((order, idx) => {
+                return listElement(idx, order);
+              })}
+          {action.deleteFromExternal && (
+            <span
+              onClick={lClick}
+              className="list-item"
+              key={"deadNode"}
+              id={"deadNode"}
+              ref={(deletedNodeRef) => {
+                const removeItemFadeIn = gsap.to(deletedNodeRef, {
+                  opacity: 0,
+                  height: 0,
+                  padding: "0px 24px",
+                  duration: 0.3,
+                  onComplete: () => {
+                    setAction((prevAction) => {
+                      return { ...prevAction, deleteFromExternal: false };
+                    });
+                  },
+                });
+              }}
+            ></span>
+          )}
+        </div>
+      </>
     );
   }
   return (
