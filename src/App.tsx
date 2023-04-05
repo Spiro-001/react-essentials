@@ -18,19 +18,22 @@ function App() {
   useOnClickOutside(aButtonRef, () => {});
 
   const handleClickA = () => {
-    setListObjects((prevList) => {
-      const copyList = structuredClone(prevList);
-      let lastKey: any = Object.keys(copyList).pop();
-      delete copyList[lastKey];
-      return copyList;
-    });
+    if (Object.keys(listObjects).length)
+      setListObjects((prevList) => {
+        const copyList = structuredClone(prevList);
+        let lastKey: any = Object.keys(copyList).pop();
+        delete copyList[lastKey];
+        return copyList;
+      });
   };
 
   const handleClickB = () => {
     setListObjects((prevList) => {
       const copyList = structuredClone(prevList);
-      let lastKey = Object.keys(copyList).length;
-      copyList[lastKey + 1] = "wew";
+      let lastKey = parseInt(
+        Object.keys(copyList)[Object.keys(copyList).length - 1]
+      );
+      copyList[lastKey ? lastKey + 1 : 1] = "wew";
       return copyList;
     });
   };
@@ -45,10 +48,10 @@ function App() {
 
   return (
     <div className="App">
-      <BasicButton onClick={handleClickB} value="Add item to list" />
+      <BasicButton onClick={handleClickB} value="Add new item to list" />
       <AdvanceButton
         onClick={handleClickA}
-        value="Delete item from list"
+        value="Delete last item from list"
         ref={aButtonRef}
       />
       <BasicList

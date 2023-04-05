@@ -40,12 +40,19 @@ export const BasicList = ({
   const [listObjects, setListObjects] =
     useState<Record<number, string>>(listObjectsProp);
   const [gsapTimeLine, setGsapTimeline] = useState<GSAPTween | null>(null);
-  const [action, setAction] = useState<boolean>(false);
+  const [action, setAction] = useState<Record<string, boolean>>({
+    delete: false,
+    new: false,
+  });
 
   const bListRef = useRef<Record<string, HTMLSpanElement | null>>({});
   const bListDivRef = useRef<HTMLDivElement | null>(null);
   const noListRef = useRef<HTMLDivElement | null>(null);
-  const listLength = useRef<number | null>(Object.keys(listObjectsProp).length);
+  const listLength = useRef<number>(
+    parseInt(
+      Object.keys(listObjectsProp)[Object.keys(listObjectsProp).length - 1]
+    )
+  ); // LAST KEY ORDER
 
   const defaultStyle = {
     minHeight: "300px",
@@ -57,75 +64,75 @@ export const BasicList = ({
     minWidth: "200px",
   };
 
-  const lClick = (element: React.MouseEvent<HTMLSpanElement>) => {
-    setGsapTimeline(
-      gsap.to(element.target, {
-        ...aSetting,
-        onComplete: () => {
-          onClick(
-            element,
-            setListObjectsProp ? listObjectsProp : listObjects,
-            setListObjectsProp ? setListObjectsProp : setListObjects
-          );
-        },
-      })
-    );
+  const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
+    if (!action.delete) {
+      // prevent overlap
+      setGsapTimeline(
+        gsap.to(element.target, {
+          ...aSetting,
+          onComplete: () => {
+            onClick(
+              element,
+              setListObjectsProp ? listObjectsProp : listObjects,
+              setListObjectsProp ? setListObjectsProp : setListObjects
+            );
+            setAction((prevAction) => {
+              return { ...prevAction, delete: false };
+            });
+          },
+        })
+      );
+      setAction((prevAction) => {
+        return { ...prevAction, delete: true };
+      });
+    }
   };
 
   useEffect(() => {
-    console.log(listLength.current);
+    gsapTimeLine?.revert();
+
     for (const key in bListRef.current) {
-      if (!bListRef.current[key] && listLength.current) {
-        listLength.current -= 1;
+      if (bListRef.current[key] === null) {
         delete bListRef.current[key];
       }
     }
-    gsapTimeLine?.revert();
-    let lastIndex = Object.keys(bListRef.current).pop();
-    if (
-      lastIndex &&
-      listLength.current &&
-      parseInt(lastIndex) > listLength.current
-    ) {
-      listLength.current += 1;
-      let newElement = bListRef.current[listLength.current];
-      const tl = gsap.to(newElement, {
+
+    const bListKeys = Object.keys(bListRef.current);
+    const lastIndex = bListKeys?.pop();
+    const newObjectListLength = Object.keys(
+      setListObjectsProp ? listObjectsProp : listObjects
+    ).length;
+
+    const noItemFadeIn = gsap.to(noListRef.current, {
+      opacity: 0,
+      height: 0,
+      padding: "0px 24px",
+      duration: 0.3,
+    });
+
+    const newItemFadeIn = gsap
+      .to(bListRef.current[lastIndex ? parseInt(lastIndex) : 1], {
         opacity: 0,
         height: 0,
         padding: "0px 24px",
         duration: 0.3,
-      });
-      tl.progress(1);
-      tl.reverse();
-    } else if (
-      Object.keys(bListRef.current).length === 1 &&
-      listLength.current === 0
-    ) {
-      let firstElement = Object.keys(bListRef.current)[0];
-      const tl = gsap.to(bListRef.current[firstElement], {
-        opacity: 0,
-        height: 0,
-        padding: "0px 24px",
-        duration: 0.3,
-      });
-      tl.progress(1);
-      tl.reverse();
+      })
+      .pause();
+
+    if (listLength.current < newObjectListLength) {
+      // item added
       listLength.current += 1;
+      newItemFadeIn.progress(1).reverse();
+    } else if (listLength.current > newObjectListLength) {
+      // item removed
+      listLength.current -= 1;
+    }
+    if (newObjectListLength === 0) {
+      noItemFadeIn.progress(1);
+      noItemFadeIn.reverse();
     }
 
-    if (
-      Object.keys(setListObjectsProp ? listObjectsProp : listObjects).length ===
-      0
-    ) {
-      const tl = gsap.to(noListRef.current, {
-        opacity: 0,
-        height: 0,
-        padding: "0px 24px",
-        duration: 0.3,
-      });
-      tl.progress(1);
-      tl.reverse();
-    }
+    console.log(lastIndex, listLength.current, bListKeys, bListRef.current);
   }, [setListObjectsProp ? listObjectsProp : listObjects]);
 
   const listElement = (idx: number, order: string) => {
