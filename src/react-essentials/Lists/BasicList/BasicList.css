@@ -5,6 +5,7 @@
     padding: 12px 0px;  
     border-radius: 4px;
     border: 1px solid black;
+    height: fit-content;
 }
 
 .list-item {
