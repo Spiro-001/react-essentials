@@ -67,7 +67,6 @@ export const BasicList = ({
             setListObjectsProp ? listObjectsProp : listObjects,
             setListObjectsProp ? setListObjectsProp : setListObjects
           );
-          setAction(true);
         },
       })
     );
@@ -86,7 +85,6 @@ export const BasicList = ({
     if (
       lastIndex &&
       listLength.current &&
-      !action &&
       parseInt(lastIndex) > listLength.current
     ) {
       listLength.current += 1;
@@ -128,8 +126,6 @@ export const BasicList = ({
       tl.progress(1);
       tl.reverse();
     }
-
-    setAction(false);
   }, [setListObjectsProp ? listObjectsProp : listObjects]);
 
   const listElement = (idx: number, order: string) => {
