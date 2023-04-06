@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButton";
 import { useOnClickOutside } from "./react-essentials/Hooks/onClickOutside";
 import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
 import { deleteListItem } from "./react-essentials/Hooks/deleteListItem";
 import "./App.css";
+import { ButtonsDemo } from "./demo/ButtonDemo";
 
 function App() {
   const aButtonRef = useRef<HTMLDivElement>(null);
@@ -48,17 +50,27 @@ function App() {
 
   return (
     <div className="App">
-      <BasicButton onClick={handleClickB} value="Add new item to list" />
-      <AdvanceButton
-        onClick={handleClickA}
-        value="Delete last item from list"
-        ref={aButtonRef}
-      />
-      <BasicList
-        onClick={handleListA}
-        listObjectsProp={listObjects}
-        setListObjectsProp={setListObjects}
-      />
+      <BrowserRouter>
+        <Switch>
+          <Route exact path={"/"}></Route>
+          <Route exact path={"/buttons"}>
+            <ButtonsDemo />
+          </Route>
+          <Route exact path={"/demo"}>
+            <BasicButton onClick={handleClickB} value="Add new item to list" />
+            <AdvanceButton
+              onClick={handleClickA}
+              value="Delete last item from list"
+              ref={aButtonRef}
+            />
+            <BasicList
+              onClick={handleListA}
+              listObjectsProp={listObjects}
+              setListObjectsProp={setListObjects}
+            />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </div>
   );
 }
