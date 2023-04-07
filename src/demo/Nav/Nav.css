@@ -1,6 +1,6 @@
 .nav {
     top: 0px;
-    position: sticky;
+    position: fixed;
     display: flex;
     justify-content: space-between;
     align-content: center;
@@ -19,4 +19,22 @@
     font-size: 24px;
     font-weight: 800;
     font-family: ProductSansT;
+}
+
+.nav-items {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 0px 24px;
+}
+
+.nav-item {
+    border: 1px solid black;
+    padding: 6px 24px;
+    border-radius: 6px;
+}
+
+.side-nav {
+    
 }

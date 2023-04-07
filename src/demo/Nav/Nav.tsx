@@ -1,4 +1,5 @@
 import "./Nav.css";
+import { SideNav } from "./SideNav";
 
 type NavProps = {
   options?: Record<number, string>;

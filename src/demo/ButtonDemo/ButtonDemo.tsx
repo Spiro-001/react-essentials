@@ -2,7 +2,8 @@ import { useState } from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
 import { BasicButton } from "../../react-essentials/Buttons/SimpleButtons/BasicButton";
 import { Nav } from "../Nav/Nav";
-import "./ButtonDemo.css";
+import "../Demo.css";
+import { SideNav } from "../Nav/SideNav";
 
 export const ButtonsDemo = () => {
   const codeSnippet = `
@@ -59,6 +60,10 @@ export const ButtonsDemo = () => {
             showLineNumbers={true}
             startingLineNumber={1}
             theme={dracula}
+            customStyle={{
+              height: "100%",
+              width: "100%",
+            }}
           />
         </div>
         <div className="container-demo inner">
@@ -85,6 +90,11 @@ export const ButtonsDemo = () => {
             showLineNumbers={true}
             startingLineNumber={1}
             theme={dracula}
+            customStyle={{
+              height: "100%",
+              width: "100%",
+              scrollBarWidth: "thin",
+            }}
           />
         </div>
         <div className="container-demo inner">
@@ -103,14 +113,13 @@ export const ButtonsDemo = () => {
 
   return (
     <>
+      <SideNav options={{ 1: "Home", 2: "Docs" }} />
       <Nav options={{ 1: "Home", 2: "Docs" }} />
-      <div className="main">
-        <div className="demo" id="button-demo-1">
-          {aDemo()}
-        </div>
-        <div className="demo" id="button-demo-2">
-          {bDemo()}
-        </div>
+      <div className="demo" id="button-demo-1">
+        {aDemo()}
+      </div>
+      <div className="demo" id="button-demo-2">
+        {bDemo()}
       </div>
     </>
   );
