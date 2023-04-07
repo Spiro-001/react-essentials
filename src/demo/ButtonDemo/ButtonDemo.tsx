@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
-import { BasicButton } from "../react-essentials/Buttons/SimpleButtons/BasicButton";
+import { BasicButton } from "../../react-essentials/Buttons/SimpleButtons/BasicButton";
+import { Nav } from "../Nav/Nav";
 import "./ButtonDemo.css";
 
 export const ButtonsDemo = () => {
@@ -43,13 +44,13 @@ export const ButtonsDemo = () => {
 
   const bStyle = {
     border: "0",
-    backgroundColor: "rgb(0, 197, 0)",
+    backgroundColor: "rgb(0, 204, 0)",
     fontWeight: "600",
     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
   };
 
-  return (
-    <div className="demo" id="button-demo-1">
+  const aDemo = () => {
+    return (
       <div className="container-demo bwgap">
         <div className="container-demo code">
           <CodeBlock
@@ -71,6 +72,46 @@ export const ButtonsDemo = () => {
           </div>
         </div>
       </div>
-    </div>
+    );
+  };
+
+  const bDemo = () => {
+    return (
+      <div className="container-demo bwgap">
+        <div className="container-demo code">
+          <CodeBlock
+            text={codeSnippet}
+            language={"tsx"}
+            showLineNumbers={true}
+            startingLineNumber={1}
+            theme={dracula}
+          />
+        </div>
+        <div className="container-demo inner">
+          <div className="container-demo column content">
+            <div className="container-demo content b-text">{countClicks}</div>
+            <BasicButton
+              bStyle={bStyle}
+              onClick={handleOnClick}
+              value="Click Me!"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <Nav options={{ 1: "Home", 2: "Docs" }} />
+      <div className="main">
+        <div className="demo" id="button-demo-1">
+          {aDemo()}
+        </div>
+        <div className="demo" id="button-demo-2">
+          {bDemo()}
+        </div>
+      </div>
+    </>
   );
 };

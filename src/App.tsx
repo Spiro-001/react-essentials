@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButton";
-import { useOnClickOutside } from "./react-essentials/Hooks/onClickOutside";
+import { UseOnClickOutside } from "./react-essentials/Hooks/UseOnClickOutside";
 import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
-import { deleteListItem } from "./react-essentials/Hooks/deleteListItem";
+import { UseDeleteListItem } from "./react-essentials/Hooks/UseDeleteListItem";
 import "./App.css";
-import { ButtonsDemo } from "./demo/ButtonDemo";
+import { ButtonsDemo } from "./demo/ButtonDemo/ButtonDemo";
 
 function App() {
   const aButtonRef = useRef<HTMLDivElement>(null);
@@ -17,7 +17,7 @@ function App() {
     4: "mark",
   });
 
-  useOnClickOutside(aButtonRef, () => {});
+  UseOnClickOutside(aButtonRef, () => {});
 
   const handleClickA = () => {
     if (Object.keys(listObjects).length)
@@ -45,7 +45,7 @@ function App() {
     list: Record<number, string>,
     manageList?: any
   ) => {
-    deleteListItem(event, list, manageList);
+    UseDeleteListItem(event, list, manageList);
   };
 
   return (

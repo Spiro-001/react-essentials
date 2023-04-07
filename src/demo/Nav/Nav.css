@@ -1,0 +1,22 @@
+.nav {
+    top: 0px;
+    position: sticky;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+
+    box-sizing: border-box;
+    width: 100%;
+    background-color: whitesmoke;
+
+    padding: 12px 24px;
+    z-index: 2;
+}
+
+.logo {
+    color: rgb(255, 41, 41);
+    font-size: 24px;
+    font-weight: 800;
+    font-family: ProductSansT;
+}

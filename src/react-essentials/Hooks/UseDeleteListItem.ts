@@ -1,4 +1,4 @@
-export function deleteListItem(
+export function UseDeleteListItem(
   event: any,
   list: Record<number, string>,
   manageList?: React.Dispatch<React.SetStateAction<Record<number, string>>>
