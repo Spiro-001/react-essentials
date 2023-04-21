@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./BasicList.css";
 
 type BasicListProp = {
@@ -16,11 +16,6 @@ type BasicListProp = {
     React.SetStateAction<Record<number, string>>
   >;
   children?: React.ReactNode;
-};
-
-type listElementProp = {
-  idx: number;
-  order: string;
 };
 
 export const BasicList = ({
