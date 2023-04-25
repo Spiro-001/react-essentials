@@ -1,0 +1,36 @@
+.side-nav {
+  position: fixed;
+  top: 128px;
+  right: 0px;
+  background-color: white;
+  border-radius: 8px 0px 0px 8px;
+  padding: 6px 0px 6px 6px;
+
+  animation-name: slideIn;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-in;
+}
+
+.s-nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px 0px;
+  border: 2px solid rgb(225, 70, 202);
+  border-right: 0px;
+  border-radius: 8px 0px 0px 8px;
+  padding: 12px 12px 12px 24px;
+}
+
+.s-nav-item:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(200px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}

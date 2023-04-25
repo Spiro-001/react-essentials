@@ -5,6 +5,7 @@ import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButto
 import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
 import "./Demo.css";
+import { BasicInputs } from "./react-essentials/Inputs/BasicInput/BasicInput";
 
 export const Demo = () => {
   const aButtonRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,10 @@ export const Demo = () => {
     UseDeleteListItem(event, list, manageList);
   };
 
+  const handleInputB = () => {};
+
+  const [input, setInput] = useState<number | null>(null);
+
   return (
     <div className="demo-container">
       <BasicButton onClick={handleClickB} value="Add new item to list" />
@@ -57,6 +62,7 @@ export const Demo = () => {
         listObjectsProp={listObjects}
         setListObjectsProp={setListObjects}
       />
+      <BasicInputs onClick={handleInputB} listStates={[input, setInput]} />
     </div>
   );
 };

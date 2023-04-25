@@ -1,40 +1,41 @@
 .nav {
-    top: 0px;
-    position: fixed;
-    display: flex;
-    justify-content: space-between;
-    align-content: center;
-    align-items: center;
+  top: 0px;
+  position: sticky;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
 
-    box-sizing: border-box;
-    width: 100%;
-    background-color: whitesmoke;
+  box-sizing: border-box;
+  width: 100%;
+  background-color: whitesmoke;
 
-    padding: 12px 24px;
-    z-index: 2;
+  padding: 12px 24px;
+  z-index: 2;
 }
 
 .logo {
-    color: rgb(255, 41, 41);
-    font-size: 24px;
-    font-weight: 800;
-    font-family: ProductSansT;
+  color: rgb(255, 41, 41);
+  font-size: 24px;
+  font-weight: 800;
+  font-family: ProductSansT;
 }
 
 .nav-items {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    gap: 0px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  gap: 0px 12px;
 }
 
 .nav-item {
-    border: 1px solid black;
-    padding: 6px 24px;
-    border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 6px 24px;
+  border-radius: 6px;
+  background-color: white;
 }
 
-.side-nav {
-    
+.nav-item:hover {
+  cursor: pointer;
 }
