@@ -9,6 +9,7 @@
   width: 100%;
 
   box-sizing: border-box;
+  gap: 24px 0px;
 }
 
 .background-b {
@@ -174,4 +175,36 @@ a {
 
 .code span::-webkit-scrollbar {
   display: none;
+}
+
+.documentation {
+  display: flex;
+  justify-content: center;
+}
+
+table {
+  background-color: rgb(35, 37, 49);
+  box-sizing: border-box;
+  margin: 0;
+  border-collapse: collapse;
+  width: 80%;
+  border-radius: 8px;
+  overflow: hidden;
+  color: white;
+}
+
+th {
+  border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+  padding: 18px 24px;
+  white-space: nowrap;
+  text-align: left;
+}
+
+td {
+  background-color: rgb(40, 42, 54);
+  padding: 16px 24px;
+}
+
+tr {
+  border-radius: 8px;
 }

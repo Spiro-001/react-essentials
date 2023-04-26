@@ -23,7 +23,6 @@ export const Home = () => {
 
   return (
     <div className="home" ref={homeRef}>
-      <Nav />
       <div className="container" ref={containerRef}>
         <ReactLogo className="react-logo" />
         <div className="row">

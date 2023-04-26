@@ -7,7 +7,7 @@ type SideNavProps = {
 export const SideNav = ({ options = {} }: SideNavProps) => {
   const handleScrollTo = (key: string) => {
     const element = document.getElementById(key);
-    if (key === "1") element?.scrollIntoView({ block: "end" });
+    if (key === "1") window.scroll({ top: 0 });
     else element?.scrollIntoView({ block: "start" });
   };
   return (
