@@ -3,9 +3,22 @@
   flex-direction: column;
   height: 100vh;
   width: 100%;
-  background-color: rgb(250, 250, 250);
+  background-color: rgb(35, 37, 49);
+  color: white;
 }
 
 .react-logo {
+  height: fit-content;
   width: 120px;
+  fill: white;
+}
+
+.b {
+  background-color: rgb(40, 42, 54);
+  border: none;
+  padding: 6px 36px;
+}
+
+.red {
+  color: rgb(255, 172, 172);
 }

@@ -21,6 +21,10 @@
   font-family: ProductSansT;
 }
 
+.logo:hover {
+  cursor: pointer;
+}
+
 .nav-items {
   display: flex;
   justify-content: center;

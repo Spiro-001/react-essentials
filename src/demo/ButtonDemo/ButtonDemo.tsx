@@ -112,22 +112,24 @@ export const ButtonsDemo = () => {
   };
 
   return (
-    <div className="background-b">
+    <>
       <Nav options={{ "/": "Home", docs: "Docs" }} />
-      <SideNav
-        options={{
-          1: "Basic Button",
-          2: "Advanced Button",
-        }}
-      />
-      <div className="demo-holder">
-        <div className="demo" id="1">
-          {aDemo()}
-        </div>
-        <div className="demo" id="2">
-          {bDemo()}
+      <div className="background-b">
+        <SideNav
+          options={{
+            1: "Basic Button",
+            2: "Advanced Button",
+          }}
+        />
+        <div className="demo-holder">
+          <div className="demo" id="1">
+            {aDemo()}
+          </div>
+          <div className="demo" id="2">
+            {bDemo()}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
