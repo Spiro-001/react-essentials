@@ -15,7 +15,11 @@ export const SideNav = ({ options = {} }: SideNavProps) => {
       <div className="s-nav-items">
         {Object.keys(options).map((key) => {
           return (
-            <span className="s-nav-item" onClick={(e) => handleScrollTo(key)}>
+            <span
+              className="s-nav-item"
+              key={key}
+              onClick={(e) => handleScrollTo(key)}
+            >
               {options[key]}
             </span>
           );

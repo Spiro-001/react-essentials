@@ -10,7 +10,7 @@ export const Nav = ({ options = {} }: NavProps) => {
 
   return (
     <div className="nav">
-      <span className="logo" onClick={(element) => history.push("/")}>
+      <span className="logo red" onClick={(element) => history.push("/")}>
         react-essentials
       </span>
       <div className="nav-items">
@@ -18,6 +18,7 @@ export const Nav = ({ options = {} }: NavProps) => {
           return (
             <span
               className="nav-item"
+              key={key}
               onClick={(element) => history.push(`${key}`)}
             >
               {options[key]}

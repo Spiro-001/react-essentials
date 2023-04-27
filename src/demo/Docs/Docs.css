@@ -1,7 +1,7 @@
 .docs {
   height: 100vh;
   width: 100%;
-  padding-top: 24px;
+  padding-top: 86px;
   background-color: rgb(35, 37, 49);
 }
 
@@ -11,6 +11,10 @@
   border-radius: 8px;
   background-color: rgb(40, 42, 54);
   color: white;
+}
+
+.component:hover {
+  cursor: pointer;
 }
 
 .list {
