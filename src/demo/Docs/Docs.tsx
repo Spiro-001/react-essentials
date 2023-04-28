@@ -19,10 +19,11 @@ export const Docs = () => {
   };
 
   const hoverOverComponent = (element: MouseEvent) => {
-    componentRef.current = element.target;
-    if (!nextStage.current) {
+    const { target } = element;
+    componentRef.current = target;
+    if (!nextStage.current && (target as HTMLDivElement).nodeName === "DIV") {
       const componentLiftTimeline = gsap.timeline();
-      componentLiftTimeline.to(element.target, {
+      componentLiftTimeline.to(componentRef.current, {
         y: -20,
       });
       componentLiftTimeline.play();
@@ -30,7 +31,8 @@ export const Docs = () => {
   };
 
   const hoverOffComponent = (element: MouseEvent) => {
-    if (!nextStage.current) {
+    const { target } = element;
+    if (!nextStage.current && (target as HTMLDivElement).nodeName === "DIV") {
       const componentLiftTimeline = gsap.timeline();
       componentLiftTimeline.to(componentRef.current, {
         y: 0,
@@ -43,8 +45,8 @@ export const Docs = () => {
     nextStage.current = true;
     const componentSwitchTimeline = gsap.timeline();
     componentSwitchTimeline.to(componentRef.current, {
-      y: "-25vh",
-      duration: 0.6,
+      y: 0,
+      duration: 0,
       onComplete: () => {
         history.push(`/${key.toLowerCase()}`);
       },

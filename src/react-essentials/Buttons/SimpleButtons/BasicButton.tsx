@@ -21,14 +21,18 @@ export const BasicButton = ({
     if (!noAnim) {
       const bTimeLine = gsap.timeline();
       bTimeLine.to(element.target, {
-        translateY: 1,
-        duration: 0.1,
-        boxShadow: "0px 2px 4px rgba(0,0,0,0.2)",
-      });
-      bTimeLine.to(element.target, {
-        translateY: 0,
-        duration: 0.1,
-        boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+        keyframes: [
+          {
+            translateY: 1,
+            duration: 0.1,
+            boxShadow: "0px 2px 4px rgba(0,0,0,0.2)",
+          },
+          {
+            translateY: 0,
+            duration: 0.1,
+            boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+          },
+        ],
       });
     }
     return onClick();

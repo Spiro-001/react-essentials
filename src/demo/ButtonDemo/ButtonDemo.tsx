@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
 import { BasicButton } from "../../react-essentials/Buttons/SimpleButtons/BasicButton";
 import { Nav } from "../Nav/Nav";
 import "../Demo.css";
 import { SideNav } from "../Nav/SideNav";
+import { Table } from "../Table/Table";
+import {
+  tableBodyA,
+  tableBodyB,
+  tableHeadersA,
+  tableHeadersB,
+} from "./TableInfo";
+import { AdvanceButton } from "../../react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 
 export const ButtonsDemo = () => {
   const codeSnippet = `
@@ -38,6 +46,7 @@ export const ButtonsDemo = () => {
   `;
 
   const [countClicks, setCountClicks] = useState<number>(0);
+  const advancedButtonRef = useRef<HTMLDivElement | null>(null);
 
   const handleOnClick = () => {
     setCountClicks((prevCount) => prevCount + 1);
@@ -100,8 +109,9 @@ export const ButtonsDemo = () => {
         <div className="container-demo inner">
           <div className="container-demo column content">
             <div className="container-demo content b-text">{countClicks}</div>
-            <BasicButton
+            <AdvanceButton
               bStyle={bStyle}
+              ref={advancedButtonRef}
               onClick={handleOnClick}
               value="Click Me!"
             />
@@ -125,86 +135,14 @@ export const ButtonsDemo = () => {
           <div className="demo" id="1">
             {aDemo()}
             <div className="documentation">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Prop name</th>
-                    <th>Optional</th>
-                    <th>Description</th>
-                    <th>Default value</th>
-                    <th>Example values</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>bStyle</td>
-                    <td>true</td>
-                    <td>custom button styling</td>
-                    <td>{"{}"}</td>
-                    <td>
-                      {`  
-                      const bStyle = {
-                      border: "0",
-                      backgroundColor: "rgb(0, 204, 0)",
-                      fontWeight: "600",
-                      boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-                    };`}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>onClick</td>
-                    <td>false</td>
-                    <td>onclick function</td>
-                    <td>null</td>
-                    <td>
-                      {`
-                      const handleOnClick = () => {
-                      setCountClicks((prevCount) => prevCount + 1);
-                    };`}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>value</td>
-                    <td>true</td>
-                    <td>text on the button</td>
-                    <td>null</td>
-                    <td>
-                      {`
-                      const buttonText = "Click Me!"
-                    `}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>noAnim</td>
-                    <td>true</td>
-                    <td>enable animation</td>
-                    <td>true</td>
-                    <td>
-                      {`
-                      true or false
-                    `}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>children</td>
-                    <td>true</td>
-                    <td>
-                      this enables the ability to wrap children elements, use
-                      this similarly to value
-                    </td>
-                    <td>null</td>
-                    <td>
-                      {`
-                      <BasicButton>Click Me!</BasicButton>
-                    `}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <Table headers={tableHeadersA} body={tableBodyA} />
             </div>
           </div>
           <div className="demo" id="2">
             {bDemo()}
+            <div className="documentation">
+              <Table headers={tableHeadersB} body={tableBodyB} />
+            </div>
           </div>
         </div>
       </div>
