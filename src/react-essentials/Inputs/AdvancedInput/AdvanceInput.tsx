@@ -6,6 +6,7 @@ type AdvanceInputProp = {
   onClick(event: MouseEvent): void;
   listStates: Array<number | SetStateAction<any> | null>;
   placeholder?: string;
+  type?: string;
 };
 
 export const AdvanceInputs = ({
@@ -13,6 +14,7 @@ export const AdvanceInputs = ({
   onClick,
   listStates,
   placeholder = "Input Value...",
+  type,
 }: AdvanceInputProp) => {
   return (
     <input
@@ -22,6 +24,7 @@ export const AdvanceInputs = ({
       value={listStates[0]}
       onChange={(element) => listStates[1](element.target.value)}
       onClick={(element) => onClick(element)}
+      type={type}
     />
   );
 };

@@ -20,6 +20,12 @@ export const Demo = () => {
     3: "doggy",
     4: "mark",
   });
+  const [locked, setLocked] = useState<boolean>(true);
+  const [password, setPassword] = useState<string>("");
+
+  // PASSCODE TO DEV PAGE :)
+  const passCode = "123react";
+
   UseOnClickOutside(aButtonRef, () => {});
   const handleClickA = () => {
     if (Object.keys(listObjects).length)
@@ -54,38 +60,78 @@ export const Demo = () => {
 
   const [input, setInput] = useState<number | null>(null);
 
-  // <BasicButton onClick={handleClickB} value="Add new item to list" />
-  // <AdvanceButton
-  //   onClick={handleClickA}
-  //   value="Delete last item from list"
-  //   ref={aButtonRef}
-  // />
-  // <BasicList
-  //   onClick={handleListA}
-  //   listObjectsProp={listObjects}
-  //   setListObjectsProp={setListObjects}
-  // />
-  // <BasicInputs listStates={[input, setInput]} />
-
   useLayoutEffect(() => {
     gsap.fromTo(
       demoRef.current,
       { y: 10, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.5, delay: 0.2 }
     );
-  });
+  }, []);
+
+  const handleSubmit = () => {
+    if (passCode === password) setLocked(false);
+  };
 
   return (
     <>
       <Nav options={{ docs: "Docs" }} />
       <div className="demo-container" ref={demoRef}>
-        <img src={Fox} alt="development" className="uc-img" />
-        <div className="container">
-          <span className="big-text dev-text">In Development.</span>
-          <span className="mini-text drt">
-            Foxxy is working very hard, come back later when he's done!
-          </span>
-        </div>
+        {locked && (
+          <>
+            <img src={Fox} alt="development" className="uc-img" />
+            <div className="container" style={{ position: "relative" }}>
+              <span className="big-text dev-text">In Development.</span>
+              <span className="mini-text drt">
+                Foxxy is working very hard, come back later when he's done!
+              </span>
+              <BasicInputs
+                listStates={[password, setPassword]}
+                bStyle={{
+                  padding: "12px 24px 12px 12px",
+                  marginLeft: "auto",
+                  marginTop: "48px",
+                  borderRadius: "12px",
+                  border: "0px",
+                }}
+                placeholder="Enter Passcode"
+                type="password"
+              />
+              <BasicButton
+                onClick={handleSubmit}
+                value="Submit"
+                bStyle={{
+                  position: "absolute",
+                  right: 8,
+                  bottom: 8,
+                  zIndex: 1,
+                  fontSize: "12px",
+                  padding: "4px 12px",
+                  borderRadius: "8px",
+                  backgroundColor: "rgb(255, 122, 122)",
+                  border: "0",
+                  fontWeight: 600,
+                  color: "white",
+                }}
+              />
+            </div>
+          </>
+        )}
+        {!locked && (
+          <>
+            <BasicButton onClick={handleClickB} value="Add new item to list" />
+            <AdvanceButton
+              onClick={handleClickA}
+              value="Delete last item from list"
+              ref={aButtonRef}
+            />
+            <BasicList
+              onClick={handleListA}
+              listObjectsProp={listObjects}
+              setListObjectsProp={setListObjects}
+            />
+            <BasicInputs listStates={[input, setInput]} />
+          </>
+        )}
       </div>
     </>
   );
