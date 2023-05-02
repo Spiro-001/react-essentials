@@ -183,7 +183,7 @@ a {
   justify-content: center;
 }
 
-table {
+.table {
   background-color: rgb(35, 37, 49);
   box-sizing: border-box;
   margin: 0;
@@ -194,18 +194,22 @@ table {
   color: white;
 }
 
-th {
+.th {
   border-bottom: 3px solid rgba(0, 0, 0, 0.1);
   padding: 18px 24px;
   white-space: nowrap;
   text-align: left;
 }
 
-td {
+.td {
   background-color: rgb(40, 42, 54);
   padding: 16px 24px;
 }
 
-tr {
+.tr {
   border-radius: 8px;
+}
+
+.rt {
+  text-align: right;
 }
