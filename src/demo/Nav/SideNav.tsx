@@ -11,7 +11,7 @@ export const SideNav = ({ options = {} }: SideNavProps) => {
     console.log(scrollTo);
     if (!scrollTo) scrollTo = 0;
     if (scrollTo >= 116 || scrollTo <= 0) {
-      if (key === "1") window.scroll({ top: 0 });
+      if (key === "1") window.scrollTo({ top: 0 });
       else window.scroll({ top: scrollTo - 116 });
     }
   };

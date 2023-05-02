@@ -1,17 +1,19 @@
 import { SetStateAction } from "react";
-import "./BasicInput.css";
+import "./AdvanceInput.css";
 
-type BasicInputProp = {
+type AdvanceInputProp = {
   bStyle?: React.CSSProperties;
+  onClick(): void;
   listStates: Array<number | SetStateAction<any> | null>;
   placeholder?: string;
 };
 
-export const BasicInputs = ({
+export const AdvanceInputs = ({
   bStyle,
+  onClick,
   listStates,
   placeholder = "Input Value...",
-}: BasicInputProp) => {
+}: AdvanceInputProp) => {
   return (
     <input
       style={bStyle}
@@ -19,6 +21,7 @@ export const BasicInputs = ({
       placeholder={placeholder}
       value={listStates[0]}
       onChange={(element) => listStates[1](element.target.value)}
+      onClick={onClick}
     />
   );
 };

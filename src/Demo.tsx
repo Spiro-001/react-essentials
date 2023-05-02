@@ -62,7 +62,7 @@ export const Demo = () => {
         listObjectsProp={listObjects}
         setListObjectsProp={setListObjects}
       />
-      <BasicInputs onClick={handleInputB} listStates={[input, setInput]} />
+      <BasicInputs listStates={[input, setInput]} />
     </div>
   );
 };

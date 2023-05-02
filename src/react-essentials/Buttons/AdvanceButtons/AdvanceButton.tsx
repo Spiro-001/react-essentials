@@ -3,7 +3,7 @@ import React, { forwardRef, MouseEvent, useRef } from "react";
 import "./AdvanceButton.css";
 
 type AdvanceButtonProps = {
-  bStyle?: Record<string, string>;
+  bStyle?: React.CSSProperties;
   onClick(): void;
   value?: string;
   anim?: GSAPTweenVars;

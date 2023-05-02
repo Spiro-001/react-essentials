@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import "./BasicList.css";
 
 type BasicListProp = {
-  bStyle?: Record<string, string>;
+  bStyle?: React.CSSProperties;
   aSetting?: Record<string, string | number>;
   onClick(
     event: any,

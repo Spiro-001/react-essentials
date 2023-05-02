@@ -3,7 +3,7 @@ import React, { forwardRef, MouseEvent } from "react";
 import "./BasicButton.css";
 
 type BasicButtonProps = {
-  bStyle?: Record<string, string>;
+  bStyle?: React.CSSProperties;
   onClick(): void;
   value?: string;
   noAnim?: boolean;

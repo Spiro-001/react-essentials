@@ -4,6 +4,7 @@ import { Demo } from "./Demo";
 import { ButtonsDemo } from "./demo/ButtonDemo/ButtonDemo";
 import { Docs } from "./demo/Docs/Docs";
 import { Home } from "./demo/Home/Home";
+import { Input } from "./demo/InputDemo/Input";
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
           </Route>
           <Route exact path={"/buttons"}>
             <ButtonsDemo />
+          </Route>
+          <Route exact path={"/inputs"}>
+            <Input />
           </Route>
           <Route exact path={"/demo"}>
             <Demo />

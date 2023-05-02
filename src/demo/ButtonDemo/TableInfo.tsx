@@ -118,4 +118,11 @@ export const tableBodyB = [
         <AdvancedButton>Click Me!</AdvancedButton>
     `,
   ],
+  [
+    "ref",
+    "true",
+    "foward ref object",
+    "null",
+    "<AdvancedButton ref={buttonRef} />",
+  ],
 ];

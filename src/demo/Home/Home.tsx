@@ -12,18 +12,21 @@ export const Home = () => {
 
   useLayoutEffect(() => {
     const loadInTimeline = gsap.timeline();
-    loadInTimeline.to(containerRef.current, {
-      y: 10,
-      opacity: 0,
-      reversed: true,
-      duration: 1,
-    });
+    loadInTimeline.fromTo(
+      containerRef.current,
+      { y: 10, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+      }
+    );
     loadInTimeline.play();
   });
 
   return (
     <div className="home" ref={homeRef}>
-      <div className="container" ref={containerRef}>
+      <div className="container" id="home-title" ref={containerRef}>
         <ReactLogo className="react-logo" />
         <div className="row">
           <span className="big-text b-text red">react-essentials</span>
