@@ -1,7 +1,7 @@
 import "../Demo.css";
 import { CodeBlock, dracula } from "react-code-blocks";
 import { BasicInputs } from "../../react-essentials/Inputs/BasicInput/BasicInput";
-import React, { useEffect, useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import { Nav } from "../Nav/Nav";
 import { Table } from "../Table/Table";
 import { tableBodyA, tableBodyB, tableHeadersA } from "./TableInfo";
@@ -10,53 +10,61 @@ import { SideNav } from "../Nav/SideNav";
 
 export const Input = () => {
   const codeSnippetBL = `
-    const handleInputClick = () => {};
-    const inputStyle = {};
-    const [inputValue, setInputValue] = useState<any>("");
-
-    return (
-      <div className="container-demo bwgap">
-        <div className="container-demo inner">
-          <div className="container-demo column content">
-            <div className="container-demo content b-text"></div>
-              <BasicInputs
-                bStyle={listStyle}
-                listStates={[inputValue, setInputValue]}
-              />
-          </div>
-        </div>
-      </div>
-    );
-    `;
-
-  const codeSnippetAL = `
-    const handleInputClick = () => {};
-    const inputStyle = {};
-    const [inputValue, setInputValue] = useState<any>("");
-
-    return (
-      <div className="container-demo bwgap">
-        <div className="container-demo inner">
-          <div className="container-demo column content">
-            <div className="container-demo content b-text"></div>
-              <AdvanceInputs
-                bStyle={listStyle}
-                listStates={[inputValue, setInputValue]}
-                onClick={handleInputClick}
-              />
-          </div>
-        </div>
-      </div>
-    );
-    `;
-
-  const handleInputClick = () => {};
   const inputStyle = {
     padding: "6px 12px 6px 6px",
     borderRadius: "6px",
     border: "1px solid black",
   };
-  const [inputValue, setInputValue] = useState<any>("");
+  const [inputValue, setInputValue] = useState<string>("");
+
+  return (
+    <div className="container-demo bwgap">
+      <div className="container-demo inner">
+        <div className="container-demo column content">
+          <div className="container-demo content b-text"></div>
+            <BasicInputs
+              bStyle={listStyle}
+              listStates={[inputValue, setInputValue]}
+            />
+        </div>
+      </div>
+    </div>
+  );
+  `;
+
+  const codeSnippetAL = `
+  const handleInputClick = (event: MouseEvent) => {};
+  const inputStyle = {
+    padding: "6px 12px 6px 6px",
+    borderRadius: "6px",
+    border: "1px solid black",
+  };
+  const [inputValueA, setInputValueA] = useState<string>("");
+
+  return (
+    <div className="container-demo bwgap">
+      <div className="container-demo inner">
+        <div className="container-demo column content">
+          <div className="container-demo content b-text"></div>
+            <AdvanceInputs
+              bStyle={listStyle}
+              listStates={[inputValue, setInputValue]}
+              onClick={handleInputClick}
+            />
+        </div>
+      </div>
+    </div>
+  );
+  `;
+
+  const handleInputClick = (event: MouseEvent) => {};
+  const inputStyle = {
+    padding: "6px 12px 6px 6px",
+    borderRadius: "6px",
+    border: "1px solid black",
+  };
+  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValueA, setInputValueA] = useState<string>("");
 
   const displayValue = () => {
     if (inputValue.length === 0) return "Input value is empty!";
@@ -130,7 +138,7 @@ export const Input = () => {
             </div>
             <AdvanceInputs
               bStyle={inputStyle}
-              listStates={[inputValue, setInputValue]}
+              listStates={[inputValueA, setInputValueA]}
               onClick={handleInputClick}
             />
           </div>

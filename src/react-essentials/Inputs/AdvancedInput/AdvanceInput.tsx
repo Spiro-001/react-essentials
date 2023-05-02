@@ -1,9 +1,9 @@
-import { SetStateAction } from "react";
+import { MouseEvent, SetStateAction } from "react";
 import "./AdvanceInput.css";
 
 type AdvanceInputProp = {
   bStyle?: React.CSSProperties;
-  onClick(): void;
+  onClick(event: MouseEvent): void;
   listStates: Array<number | SetStateAction<any> | null>;
   placeholder?: string;
 };
@@ -21,7 +21,7 @@ export const AdvanceInputs = ({
       placeholder={placeholder}
       value={listStates[0]}
       onChange={(element) => listStates[1](element.target.value)}
-      onClick={onClick}
+      onClick={(element) => onClick(element)}
     />
   );
 };
