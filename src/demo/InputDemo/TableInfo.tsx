@@ -13,12 +13,12 @@ export const tableBodyA = [
     "custom button styling",
     "{}",
     `  
-      const bStyle = {
-      border: "0",
-      backgroundColor: "rgb(0, 204, 0)",
-      fontWeight: "600",
-      boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-    };`,
+    const bStyle = {
+      padding: "6px 12px 6px 6px",
+      borderRadius: "6px",
+      border: "1px solid black",
+    };
+    `,
   ],
   [
     "listStates",
@@ -48,11 +48,11 @@ export const tableBodyB = [
     "custom button styling",
     "{}",
     `  
-      const bStyle = {
-      border: "0",
-      backgroundColor: "rgb(0, 204, 0)",
-      fontWeight: "600",
-      boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+    const bStyle = {
+      padding: "6px 12px 6px 6px",
+      borderRadius: "6px",
+      border: "1px solid black",
+    };
     };`,
   ],
   [
@@ -61,9 +61,8 @@ export const tableBodyB = [
     "onclick function",
     "null",
     `
-      const handleOnClick = () => {
-      setCountClicks((prevCount) => prevCount + 1);
-    };`,
+      const handleInputClick = (event: MouseEvent) => {};
+    `,
   ],
   [
     "listStates",
@@ -72,7 +71,7 @@ export const tableBodyB = [
     "null",
     `
       const [value, setValue] = useState(0)
-      <BasicInputs listStates={[value, setValue]} />
+      <AdvanceInputs listStates={[value, setValue]} />
     `,
   ],
   [
