@@ -149,13 +149,20 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     useLayoutEffect(() => {
       gsap.registerPlugin(Draggable);
       Object.keys(aListRef.current).forEach((listElementKey: string) => {
+        let minY = 0
+        let maxY = 0
         Draggable.create(aListRef.current[listElementKey], {
           type: "y",
-          bounds: { minY: -50, maxY: 200 },
+          bounds: { minY: minY, maxY: 200 },
           dragResistance: 0.2,
           onDrag: (element) => handleItemDrag(element),
           onDragEnd: (element) => handleItemDrop(element),
         });
+        if (aListRef.current[listElementKey]?.clientHeight) {
+          minY -= aListRef.current[listElementKey]?.clientHeight
+        } else {
+          minY -=
+        }
       });
     });
 
