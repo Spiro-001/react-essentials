@@ -1,5 +1,6 @@
 import gsap from "gsap";
 import Draggable from "gsap/Draggable";
+import $ from "jquery";
 import {
   forwardRef,
   useEffect,
@@ -30,7 +31,9 @@ type AdvanceListProp = {
 export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
   function AdvanceList(
     {
-      defaultStyle = {},
+      defaultStyle = {
+        minWidth: "200px",
+      },
       styleNoItems = {
         minHeight: "300px",
         minWidth: "200px",
@@ -148,21 +151,28 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
 
     useLayoutEffect(() => {
       gsap.registerPlugin(Draggable);
+      let minY: number = 0;
+      let maxY: number;
+      let padding: number;
+      let paddingOffsets: number;
+      if (typeof ref !== "function" && ref) {
+        maxY = ref.current?.clientHeight ?? 0;
+        paddingOffsets = $(ref.current as HTMLDivElement).innerHeight() ?? 0;
+        paddingOffsets -= $(ref.current as HTMLDivElement).height() ?? 0;
+        console.log(paddingOffsets);
+      }
       Object.keys(aListRef.current).forEach((listElementKey: string) => {
-        let minY = 0
-        let maxY = 0
+        // maxY += minY;
+        maxY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
+        console.log(minY, maxY, aListRef.current[listElementKey]?.clientHeight);
         Draggable.create(aListRef.current[listElementKey], {
           type: "y",
-          bounds: { minY: minY, maxY: 200 },
+          bounds: { minY: minY, maxY: maxY - paddingOffsets },
           dragResistance: 0.2,
           onDrag: (element) => handleItemDrag(element),
           onDragEnd: (element) => handleItemDrop(element),
         });
-        if (aListRef.current[listElementKey]?.clientHeight) {
-          minY -= aListRef.current[listElementKey]?.clientHeight
-        } else {
-          minY -=
-        }
+        minY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
       });
     });
 
