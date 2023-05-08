@@ -7,6 +7,7 @@ import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/Advance
 import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
 import { BasicInputs } from "./react-essentials/Inputs/BasicInput/BasicInput";
 import { Nav } from "./demo/Nav/Nav";
+import { AdvanceList } from "./react-essentials/Lists/AdvanceList/AdvanceList";
 import Fox from "./fox.webp";
 import gsap from "gsap";
 
@@ -14,6 +15,7 @@ export const Demo = () => {
   const aButtonRef = useRef<HTMLDivElement>(null);
   const demoRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
+  const aListRef = useRef<HTMLDivElement>(null);
 
   const [listObjects, setListObjects] = useState<Record<number, string>>({
     1: "bob",
@@ -21,9 +23,17 @@ export const Demo = () => {
     3: "doggy",
     4: "mark",
   });
-  const [locked, setLocked] = useState<boolean>(true);
+
+  const [aListObjects, aSetListObjects] = useState<Record<number, string>>({
+    1: "bob",
+    2: "charles",
+    3: "doggy",
+    4: "mark",
+  });
+
+  const [locked, setLocked] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
-  const [input, setInput] = useState<string | null>(null);
+  const [input, setInput] = useState<string | null>("");
 
   // PASSCODE TO DEV PAGE :)
   const passCode = "123react";
@@ -128,6 +138,14 @@ export const Demo = () => {
     UseDeleteListItem(event, list, manageList);
   };
 
+  const handleListB = (
+    event: any,
+    list: Record<number, string>,
+    manageList?: any
+  ) => {
+    UseDeleteListItem(event, list, manageList);
+  };
+
   return (
     <>
       <Nav options={{ docs: "Docs" }} />
@@ -145,6 +163,13 @@ export const Demo = () => {
               onClick={handleListA}
               listObjectsProp={listObjects}
               setListObjectsProp={setListObjects}
+            />
+            <AdvanceList
+              onClick={handleListB}
+              listObjectsProp={aListObjects}
+              setListObjectsProp={aSetListObjects}
+              draggable={true}
+              ref={aListRef}
             />
             <BasicInputs
               listStates={[input, setInput]}

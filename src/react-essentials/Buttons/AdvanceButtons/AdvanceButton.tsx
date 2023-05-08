@@ -36,7 +36,7 @@ export const AdvanceButton = forwardRef<HTMLDivElement, AdvanceButtonProps>(
     };
 
     return (
-      <div style={bStyle} onClick={bClick} className="basic-button" ref={ref}>
+      <div style={bStyle} onClick={bClick} className="advance-button" ref={ref}>
         {value ? value : children}
       </div>
     );

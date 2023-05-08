@@ -1,19 +1,19 @@
-.basic-button {
-    color: black;
-    border: 1px solid black;
-    border-radius: 4px;
+.advance-button {
+  color: black;
+  border: 1px solid black;
+  border-radius: 4px;
 
-    height: fit-content;
-    width: fit-content;
+  height: fit-content;
+  width: fit-content;
 
-    padding: 12px 24px;
-    background-color: white;
+  padding: 12px 24px;
+  background-color: white;
 
-    transition-property: filter;
-    transition-duration: 0.2s;
+  transition-property: filter;
+  transition-duration: 0.2s;
 }
 
-.basic-button:hover {
-    cursor: pointer;
-    filter: brightness(0.8);
+.advance-button:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
 }
