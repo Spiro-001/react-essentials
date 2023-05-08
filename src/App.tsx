@@ -1,5 +1,5 @@
-import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.css";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Demo } from "./Demo";
 import { ButtonsDemo } from "./demo/ButtonDemo/ButtonDemo";
 import { Docs } from "./demo/Docs/Docs";

@@ -1,18 +1,19 @@
+import "./Demo.css";
 import { UseOnClickOutside } from "./react-essentials/Hooks/UseOnClickOutside";
 import { UseDeleteListItem } from "./react-essentials/Hooks/UseDeleteListItem";
-import { useLayoutEffect, useRef, useState } from "react";
+import { MouseEvent, useLayoutEffect, useRef, useState } from "react";
 import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButton";
 import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
 import { BasicInputs } from "./react-essentials/Inputs/BasicInput/BasicInput";
-import Fox from "./fox.webp";
-import "./Demo.css";
 import { Nav } from "./demo/Nav/Nav";
+import Fox from "./fox.webp";
 import gsap from "gsap";
 
 export const Demo = () => {
   const aButtonRef = useRef<HTMLDivElement>(null);
   const demoRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
 
   const [listObjects, setListObjects] = useState<Record<number, string>>({
     1: "bob",
@@ -25,6 +26,20 @@ export const Demo = () => {
 
   // PASSCODE TO DEV PAGE :)
   const passCode = "123react";
+
+  const handleSubmit = () => {
+    const errorTimeline = gsap.timeline();
+    if (passCode === password) setLocked(false);
+    else {
+      errorTimeline.fromTo(
+        inputRef.current,
+        {
+          x: 20,
+        },
+        { x: 0, ease: "elastic.out(1, 0.1)", duration: 1 }
+      );
+    }
+  };
 
   UseOnClickOutside(aButtonRef, () => {});
   const handleClickA = () => {
@@ -68,10 +83,6 @@ export const Demo = () => {
     );
   }, []);
 
-  const handleSubmit = () => {
-    if (passCode === password) setLocked(false);
-  };
-
   return (
     <>
       <Nav options={{ docs: "Docs" }} />
@@ -84,35 +95,36 @@ export const Demo = () => {
               <span className="mini-text drt">
                 Foxxy is working very hard, come back later when he's done!
               </span>
-              <BasicInputs
-                listStates={[password, setPassword]}
-                bStyle={{
-                  padding: "12px 24px 12px 12px",
-                  marginLeft: "auto",
-                  marginTop: "48px",
-                  borderRadius: "12px",
-                  border: "0px",
-                }}
-                placeholder="Enter Passcode"
-                type="password"
-              />
-              <BasicButton
-                onClick={handleSubmit}
-                value="Submit"
-                bStyle={{
-                  position: "absolute",
-                  right: 8,
-                  bottom: 8,
-                  zIndex: 1,
-                  fontSize: "12px",
-                  padding: "4px 12px",
-                  borderRadius: "8px",
-                  backgroundColor: "rgb(255, 122, 122)",
-                  border: "0",
-                  fontWeight: 600,
-                  color: "white",
-                }}
-              />
+              <div className="input-container" ref={inputRef}>
+                <BasicInputs
+                  listStates={[password, setPassword]}
+                  bStyle={{
+                    padding: "12px 24px 12px 12px",
+                    marginTop: "48px",
+                    borderRadius: "12px",
+                    border: "0px",
+                  }}
+                  placeholder="Enter Passcode"
+                  type="password"
+                />
+                <BasicButton
+                  onClick={handleSubmit}
+                  value="Submit"
+                  bStyle={{
+                    position: "absolute",
+                    right: 8,
+                    bottom: 8,
+                    zIndex: 1,
+                    fontSize: "12px",
+                    padding: "4px 12px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgb(255, 122, 122)",
+                    border: "0",
+                    fontWeight: 600,
+                    color: "white",
+                  }}
+                />
+              </div>
             </div>
           </>
         )}

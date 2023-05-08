@@ -4,7 +4,7 @@ import "./BasicButton.css";
 
 type BasicButtonProps = {
   bStyle?: React.CSSProperties;
-  onClick(): void;
+  onClick(element: MouseEvent<HTMLDivElement>): void;
   value?: string;
   noAnim?: boolean;
   children?: React.ReactNode;
@@ -35,7 +35,7 @@ export const BasicButton = ({
         ],
       });
     }
-    return onClick();
+    return onClick(element);
   };
 
   return (
