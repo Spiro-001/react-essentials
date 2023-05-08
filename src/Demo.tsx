@@ -1,7 +1,7 @@
 import "./Demo.css";
 import { UseOnClickOutside } from "./react-essentials/Hooks/UseOnClickOutside";
 import { UseDeleteListItem } from "./react-essentials/Hooks/UseDeleteListItem";
-import { MouseEvent, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { BasicButton } from "./react-essentials/Buttons/SimpleButtons/BasicButton";
 import { AdvanceButton } from "./react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 import { BasicList } from "./react-essentials/Lists/BasicList/BasicList";
@@ -23,9 +23,62 @@ export const Demo = () => {
   });
   const [locked, setLocked] = useState<boolean>(true);
   const [password, setPassword] = useState<string>("");
+  const [input, setInput] = useState<string | null>(null);
 
   // PASSCODE TO DEV PAGE :)
   const passCode = "123react";
+
+  useLayoutEffect(() => {
+    gsap.fromTo(
+      demoRef.current,
+      { y: 10, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, delay: 0.2 }
+    );
+  }, []);
+
+  const lockedDemo = () => {
+    return (
+      <>
+        <img src={Fox} alt="development" className="uc-img" />
+        <div className="container" style={{ position: "relative" }}>
+          <span className="big-text dev-text">In Development.</span>
+          <span className="mini-text drt">
+            Foxxy is working very hard, come back later when he's done!
+          </span>
+          <div className="input-container" ref={inputRef}>
+            <BasicInputs
+              listStates={[password, setPassword]}
+              bStyle={{
+                padding: "12px 24px 12px 12px",
+                marginTop: "48px",
+                borderRadius: "12px",
+                border: "0px",
+              }}
+              placeholder="Enter Passcode"
+              type="password"
+            />
+            <BasicButton
+              onClick={handleSubmit}
+              value="Submit"
+              bStyle={{
+                position: "absolute",
+                right: 8,
+                bottom: 8,
+                zIndex: 1,
+                fontSize: "12px",
+                padding: "4px 12px",
+                borderRadius: "8px",
+                backgroundColor: "rgb(255, 122, 122)",
+                border: "0",
+                fontWeight: 600,
+                color: "white",
+              }}
+            />
+          </div>
+        </div>
+      </>
+    );
+  };
 
   const handleSubmit = () => {
     const errorTimeline = gsap.timeline();
@@ -42,6 +95,7 @@ export const Demo = () => {
   };
 
   UseOnClickOutside(aButtonRef, () => {});
+
   const handleClickA = () => {
     if (Object.keys(listObjects).length)
       setListObjects((prevList) => {
@@ -53,14 +107,17 @@ export const Demo = () => {
   };
 
   const handleClickB = () => {
-    setListObjects((prevList) => {
-      const copyList = structuredClone(prevList);
-      let lastKey = parseInt(
-        Object.keys(copyList)[Object.keys(copyList).length - 1]
-      );
-      copyList[lastKey ? lastKey + 1 : 1] = "wew";
-      return copyList;
-    });
+    if (input) {
+      setListObjects((prevList) => {
+        const copyList = structuredClone(prevList);
+        let lastKey = parseInt(
+          Object.keys(copyList)[Object.keys(copyList).length - 1]
+        );
+        copyList[lastKey ? lastKey + 1 : 1] = input;
+        setInput("");
+        return copyList;
+      });
+    }
   };
 
   const handleListA = (
@@ -71,63 +128,11 @@ export const Demo = () => {
     UseDeleteListItem(event, list, manageList);
   };
 
-  const handleInputB = () => {};
-
-  const [input, setInput] = useState<number | null>(null);
-
-  useLayoutEffect(() => {
-    gsap.fromTo(
-      demoRef.current,
-      { y: 10, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, delay: 0.2 }
-    );
-  }, []);
-
   return (
     <>
       <Nav options={{ docs: "Docs" }} />
       <div className="demo-container" ref={demoRef}>
-        {locked && (
-          <>
-            <img src={Fox} alt="development" className="uc-img" />
-            <div className="container" style={{ position: "relative" }}>
-              <span className="big-text dev-text">In Development.</span>
-              <span className="mini-text drt">
-                Foxxy is working very hard, come back later when he's done!
-              </span>
-              <div className="input-container" ref={inputRef}>
-                <BasicInputs
-                  listStates={[password, setPassword]}
-                  bStyle={{
-                    padding: "12px 24px 12px 12px",
-                    marginTop: "48px",
-                    borderRadius: "12px",
-                    border: "0px",
-                  }}
-                  placeholder="Enter Passcode"
-                  type="password"
-                />
-                <BasicButton
-                  onClick={handleSubmit}
-                  value="Submit"
-                  bStyle={{
-                    position: "absolute",
-                    right: 8,
-                    bottom: 8,
-                    zIndex: 1,
-                    fontSize: "12px",
-                    padding: "4px 12px",
-                    borderRadius: "8px",
-                    backgroundColor: "rgb(255, 122, 122)",
-                    border: "0",
-                    fontWeight: 600,
-                    color: "white",
-                  }}
-                />
-              </div>
-            </div>
-          </>
-        )}
+        {locked && lockedDemo()}
         {!locked && (
           <>
             <BasicButton onClick={handleClickB} value="Add new item to list" />
@@ -141,7 +146,11 @@ export const Demo = () => {
               listObjectsProp={listObjects}
               setListObjectsProp={setListObjects}
             />
-            <BasicInputs listStates={[input, setInput]} />
+            <BasicInputs
+              listStates={[input, setInput]}
+              bStyle={{ padding: "12px 24px 12px 6px" }}
+              placeholder="Add to this list..."
+            />
           </>
         )}
       </div>
