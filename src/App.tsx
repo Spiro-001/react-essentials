@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Switch } from "react-router-dom";
 import { Demo } from "./Demo";
 import { ButtonsDemo } from "./demo/ButtonDemo/ButtonDemo";
 import { Docs } from "./demo/Docs/Docs";
@@ -9,7 +9,7 @@ import { Input } from "./demo/InputDemo/Input";
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+      <HashRouter>
         <Switch>
           <Route exact path={"/"}>
             <Home />
@@ -27,7 +27,7 @@ function App() {
             <Docs />
           </Route>
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
