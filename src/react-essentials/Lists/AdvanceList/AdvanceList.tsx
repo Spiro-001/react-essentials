@@ -13,6 +13,7 @@ import "./AdvanceList.css";
 type AdvanceListProp = {
   defaultStyle?: React.CSSProperties;
   styleNoItems?: React.CSSProperties;
+  listItemStyle?: React.CSSProperties;
   aSetting?: Record<string, string | number>;
   onClick(
     event: any,
@@ -38,6 +39,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         minHeight: "300px",
         minWidth: "200px",
       },
+      listItemStyle = {},
       aSetting = {
         opacity: 0,
         height: 0,
@@ -71,6 +73,10 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     );
     const itemRef = useRef<HTMLSpanElement | null>(null);
     const itemOverRef = useRef<HTMLSpanElement | null>(null);
+    const itemPos = useRef<Array<number>>([]);
+    const order = useRef<number>(1);
+    const returnBack = useRef<boolean>(false);
+
     const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
       if (!action.delete) {
         // prevent overlap
@@ -159,56 +165,92 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         maxY = ref.current?.clientHeight ?? 0;
         paddingOffsets = $(ref.current as HTMLDivElement).innerHeight() ?? 0;
         paddingOffsets -= $(ref.current as HTMLDivElement).height() ?? 0;
-        console.log(paddingOffsets);
       }
       Object.keys(aListRef.current).forEach((listElementKey: string) => {
         // maxY += minY;
         maxY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
-        console.log(minY, maxY, aListRef.current[listElementKey]?.clientHeight);
         Draggable.create(aListRef.current[listElementKey], {
           type: "y",
           bounds: { minY: minY, maxY: maxY - paddingOffsets },
-          dragResistance: 0.2,
-          onDrag: (element) => handleItemDrag(element),
-          onDragEnd: (element) => handleItemDrop(element),
+          onDragStart: (event) => handleItemDragStart(event),
+          onDrag: (event) => handleItemDrag(event),
+          onDragEnd: (event) => handleItemDrop(event),
         });
         minY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
       });
     });
 
+    const handleItemDragStart = (event: PointerEvent) => {
+      const { target } = event;
+      itemRef.current = target as HTMLSpanElement;
+      itemPos.current = [];
+      Object.keys(aListRef.current).forEach((itemElement, idx) => {
+        itemPos.current.push(
+          (isNaN(itemPos.current[idx - 1]) ? 0 : itemPos.current[idx - 1]) +
+            (aListRef.current[itemElement]?.clientHeight ?? 0)
+        );
+      });
+    };
+
     const handleItemDrag = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
-      const { target } = event;
-      itemRef.current = target as HTMLSpanElement;
-      Object.keys(aListRef.current).forEach((listElementKey) => {
-        let positionItem = 31; //PADDING CHANGE LATER
-        console.log(aListRef.current[listElementKey]?.clientHeight);
+      let hoveredItemPosition: number;
+      order.current = 1;
+      if (
+        event.target === itemRef.current &&
+        ref &&
+        typeof ref !== "function"
+      ) {
+        hoveredItemPosition =
+          event.screenY +
+          (itemRef.current?.clientHeight ?? 0) -
+          (ref.current?.offsetHeight ?? 0);
+      }
+      itemPos.current.forEach((pos) => {
+        if (hoveredItemPosition) {
+          if (hoveredItemPosition > pos) order.current++;
+        } else {
+          returnBack.current = true;
+        }
       });
-      console.log(event.y);
+      if (parseInt(itemRef.current?.id ?? "-1") !== order.current) {
+        let moveDirection = event.movementY / (event.movementY * -1);
+        let moveAmount =
+          itemPos.current[order.current - 1] -
+          itemPos.current[parseInt(itemRef.current?.id ?? "-1") - 1];
+        console.log(event.movementY);
+        if (moveAmount < 0) moveAmount *= -1;
+        gsap.to(aListRef.current[order.current], {
+          y: 0,
+        });
+      }
     };
 
     const handleItemDrop = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
       const { target } = event;
-      if (itemRef.current && itemOverRef.current) {
+      if (itemRef.current && !returnBack.current) {
         const copyList: Record<number, string> = structuredClone(listObjects);
         let fromValue = parseInt(itemRef.current?.id);
-        let toValue = parseInt(itemOverRef.current?.id);
-        setListObjects((prevList) => {
-          copyList[fromValue] = prevList[toValue];
-          copyList[toValue] = prevList[fromValue];
-          return copyList;
-        });
-        if (setListObjectsProp) setListObjectsProp(copyList);
+        console.log(fromValue, order.current);
+        if (fromValue) {
+          setListObjects((prevList) => {
+            copyList[fromValue] = prevList[order.current];
+            copyList[order.current] = prevList[fromValue];
+            console.log(copyList);
+            return copyList;
+          });
+          if (setListObjectsProp) setListObjectsProp(copyList);
+        }
       }
+      returnBack.current = false;
     };
 
     const listElement = (idx: number, order: string) => {
       return (
         <span
-          onClick={lClick}
           className="list-item"
           key={idx}
           id={order}
@@ -238,6 +280,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
             {action.deleteFromExternal && (
               <span
                 onClick={lClick}
+                style={listItemStyle}
                 className="list-item"
                 key={"deadNode"}
                 id={"deadNode"}

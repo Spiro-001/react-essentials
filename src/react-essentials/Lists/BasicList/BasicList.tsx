@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import "./BasicList.css";
 
 type BasicListProp = {
-  bStyle?: React.CSSProperties;
+  defaultStyle?: React.CSSProperties;
+  styleNoItems?: React.CSSProperties;
+  listItemStyle?: React.CSSProperties;
   aSetting?: Record<string, string | number>;
   onClick(
     event: any,
@@ -19,7 +21,14 @@ type BasicListProp = {
 };
 
 export const BasicList = ({
-  bStyle,
+  defaultStyle = {
+    minWidth: "200px",
+  },
+  styleNoItems = {
+    minHeight: "300px",
+    minWidth: "200px",
+  },
+  listItemStyle = {},
   aSetting = {
     opacity: 0,
     height: 0,
@@ -49,16 +58,6 @@ export const BasicList = ({
       Object.keys(listObjectsProp)[Object.keys(listObjectsProp).length - 1]
     )
   );
-
-  const defaultStyle = {
-    minHeight: "300px",
-    minWidth: "200px",
-  };
-
-  const defaultStyleNoItems = {
-    minHeight: "300px",
-    minWidth: "200px",
-  };
 
   const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
     if (!action.delete) {
@@ -161,11 +160,7 @@ export const BasicList = ({
   ) {
     return (
       <>
-        <div
-          style={bStyle ? bStyle : defaultStyle}
-          className="basic-list"
-          ref={bListDivRef}
-        >
+        <div style={defaultStyle} className="basic-list" ref={bListDivRef}>
           {children
             ? children
             : Object.keys(listObjectsProp).map((order, idx) => {
@@ -174,6 +169,7 @@ export const BasicList = ({
           {action.deleteFromExternal && (
             <span
               onClick={lClick}
+              style={listItemStyle}
               className="list-item"
               key={"deadNode"}
               id={"deadNode"}
@@ -197,7 +193,7 @@ export const BasicList = ({
     );
   }
   return (
-    <div style={bStyle ? bStyle : defaultStyleNoItems} className="basic-list">
+    <div style={styleNoItems} className="basic-list">
       <span className="list-item" ref={noListRef}>
         {ifEmpty}
       </span>
