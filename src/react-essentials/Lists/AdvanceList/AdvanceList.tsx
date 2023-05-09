@@ -74,7 +74,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     const itemRef = useRef<HTMLSpanElement | null>(null);
     const itemOverRef = useRef<HTMLSpanElement | null>(null);
     const itemPos = useRef<Array<number>>([]);
-    const order = useRef<number>(1);
+    const order = useRef<number | null>(null);
     const returnBack = useRef<boolean>(false);
 
     const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
@@ -183,48 +183,21 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     const handleItemDragStart = (event: PointerEvent) => {
       const { target } = event;
       itemRef.current = target as HTMLSpanElement;
-      itemPos.current = [];
+      itemPos.current = [0];
       Object.keys(aListRef.current).forEach((itemElement, idx) => {
         itemPos.current.push(
-          (isNaN(itemPos.current[idx - 1]) ? 0 : itemPos.current[idx - 1]) +
+          (isNaN(itemPos.current[idx - 1]) ? 0 : itemPos.current[idx]) +
             (aListRef.current[itemElement]?.clientHeight ?? 0)
         );
       });
     };
 
+    let moveDirection = { direction: 0 };
+
     const handleItemDrag = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
       let hoveredItemPosition: number;
-      order.current = 1;
-      if (
-        event.target === itemRef.current &&
-        ref &&
-        typeof ref !== "function"
-      ) {
-        hoveredItemPosition =
-          event.screenY +
-          (itemRef.current?.clientHeight ?? 0) -
-          (ref.current?.offsetHeight ?? 0);
-      }
-      itemPos.current.forEach((pos) => {
-        if (hoveredItemPosition) {
-          if (hoveredItemPosition > pos) order.current++;
-        } else {
-          returnBack.current = true;
-        }
-      });
-      if (parseInt(itemRef.current?.id ?? "-1") !== order.current) {
-        let moveDirection = event.movementY / (event.movementY * -1);
-        let moveAmount =
-          itemPos.current[order.current - 1] -
-          itemPos.current[parseInt(itemRef.current?.id ?? "-1") - 1];
-        console.log(event.movementY);
-        if (moveAmount < 0) moveAmount *= -1;
-        gsap.to(aListRef.current[order.current], {
-          y: 0,
-        });
-      }
     };
 
     const handleItemDrop = (event: PointerEvent) => {
@@ -233,13 +206,11 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       const { target } = event;
       if (itemRef.current && !returnBack.current) {
         const copyList: Record<number, string> = structuredClone(listObjects);
-        let fromValue = parseInt(itemRef.current?.id);
-        console.log(fromValue, order.current);
+        let fromValue = parseInt(itemRef.current?.id) - 1;
         if (fromValue) {
           setListObjects((prevList) => {
-            copyList[fromValue] = prevList[order.current];
-            copyList[order.current] = prevList[fromValue];
-            console.log(copyList);
+            copyList[fromValue] = prevList[order.current ?? fromValue];
+            copyList[order.current ?? fromValue] = prevList[fromValue];
             return copyList;
           });
           if (setListObjectsProp) setListObjectsProp(copyList);
