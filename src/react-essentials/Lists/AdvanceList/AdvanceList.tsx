@@ -183,6 +183,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     const handleItemDragStart = (event: PointerEvent) => {
       const { target } = event;
       itemRef.current = target as HTMLSpanElement;
+      order.current = parseInt(itemRef.current?.id ?? "0");
       itemPos.current = [0];
       Object.keys(aListRef.current).forEach((itemElement, idx) => {
         itemPos.current.push(
@@ -198,6 +199,32 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       event.stopPropagation();
       event.preventDefault();
       let hoveredItemPosition: number;
+
+      if (ref && typeof ref !== "function") {
+        hoveredItemPosition = event.screenY - (ref.current?.offsetHeight ?? 0);
+        console.log(order.current, hoveredItemPosition);
+      }
+
+      console.log(itemPos.current);
+
+      itemPos.current.forEach((pos, idx) => {
+        if (hoveredItemPosition) {
+          if (itemPos.current[idx + 1]) {
+            if (
+              hoveredItemPosition > pos &&
+              hoveredItemPosition < itemPos.current[idx + 1]
+            )
+              order.current = idx + 1;
+            else if (hoveredItemPosition < 0) order.current = 1;
+            else if (
+              hoveredItemPosition > itemPos.current[itemPos.current.length - 1]
+            )
+              order.current = itemPos.current.length - 1;
+          }
+        } else {
+          returnBack.current = true;
+        }
+      });
     };
 
     const handleItemDrop = (event: PointerEvent) => {
