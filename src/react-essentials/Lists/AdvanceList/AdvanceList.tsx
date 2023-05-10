@@ -74,9 +74,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     );
     const listItemRef = useRef<Array<Record<string | number, any>>>([]);
     const itemRef = useRef<Record<string | number, any>>({});
-    console.log(listObjectsProp);
-    console.log(aListRef.current);
-
     const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
       if (!action.delete) {
         // prevent overlap
@@ -171,7 +168,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           onDragEnd: (event) => handleItemDrop(event),
         });
         minY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
-        gsap.set(aListRef.current[listElementKey], { clearProps: "all" });
       });
     });
 
@@ -202,7 +198,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         Object.keys(aListRef.current).forEach((node) => {
           let itemNode = aListRef.current[node];
           if (itemNode !== itemRef.current.node && itemNode) {
-            console.log(itemNode?.id);
             listItemRef.current.push({
               initialPosition: itemNode.offsetTop - paddingOffsets,
               currentPosition: itemNode.offsetTop - paddingOffsets,
@@ -217,8 +212,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         });
 
         listItemRef.current.push(itemRef.current);
-
-        console.log(listItemRef);
       }
     };
 
@@ -260,36 +253,39 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         itemRef.current.currentPosition =
           itemRef.current.boundingBox - itemRef.current.height;
       }
+      // console.log(itemRef.current.currentPosition);
     };
 
     const handleItemDrop = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
       const { target } = event;
-      console.log(itemRef.current);
-      gsap.to(itemRef.current.node, {});
-      itemRef.current.currentPosition = itemRef.current.initialPosition;
-      itemRef.current.savePoint = itemRef.current.initialPosition;
-
-      var newList: Record<number | string, any> = {};
-      var swapValue: Array<number> = [];
-      listItemRef.current.forEach((item) => {
-        newList[item.order] = parseInt(item.node.id);
-      });
-
-      console.log(newList, swapValue);
-
-      setListObjectsProp((prevList) => {
-        var copyList: Record<number | string, any> = {};
-        Object.keys(newList).forEach((newListKey) => {
-          copyList[newListKey] = prevList[newList[newListKey]];
+      gsap
+        .to(itemRef.current.node, {
+          top: itemRef.current.savePoint - itemRef.current.currentPosition,
+          position: "relative",
+          duration: 0.3,
+          ease: "power4.out",
+        })
+        .then(() => {
+          itemRef.current.currentPosition = itemRef.current.initialPosition;
+          itemRef.current.savePoint = itemRef.current.initialPosition;
+          var newList: Record<number | string, any> = {};
+          var swapValue: Array<number> = [];
+          listItemRef.current.forEach((item) => {
+            newList[item.order] = parseInt(item.node.id);
+          });
+          setListObjectsProp((prevList) => {
+            var copyList: Record<number | string, any> = {};
+            Object.keys(newList).forEach((newListKey) => {
+              copyList[newListKey] = prevList[newList[newListKey]];
+              gsap.set(aListRef.current[newListKey], { clearProps: "all" });
+            });
+            return copyList;
+          });
+          listItemRef.current = [];
+          itemRef.current = {};
         });
-        console.log(copyList);
-        return copyList;
-      });
-      console.log(aListRef.current, listObjectsProp);
-      listItemRef.current = [];
-      itemRef.current = {};
     };
 
     const listElement = (idx: number, order: string) => {
@@ -319,7 +315,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
                 })}
             {action.deleteFromExternal && (
               <span
-                onClick={lClick}
+                // onClick={lClick}
                 style={listItemStyle}
                 className="list-item"
                 key={"deadNode"}
