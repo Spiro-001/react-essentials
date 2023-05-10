@@ -3,6 +3,7 @@ import Draggable from "gsap/Draggable";
 import $ from "jquery";
 import {
   forwardRef,
+  MutableRefObject,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -55,11 +56,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     }: AdvanceListProp,
     ref
   ) {
-    interface moveDirectionType {
-      initialPos: number | null;
-      differnce: number | null;
-    }
-
     const [listObjects, setListObjects] =
       useState<Record<number, string>>(listObjectsProp);
     const [gsapTimeLine, setGsapTimeline] = useState<GSAPTween | null>(null);
@@ -76,13 +72,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         Object.keys(listObjectsProp)[Object.keys(listObjectsProp).length - 1]
       )
     );
-    const itemRef = useRef<HTMLSpanElement | null>(null);
-    const itemOverRef = useRef<HTMLSpanElement | null>(null);
-    const itemPos = useRef<Array<Array<number>>>([]);
-    const order = useRef<number | null>(null);
-    const returnBack = useRef<boolean>(false);
-    const stopAnimOverlap = useRef<boolean>(false);
-    const direction = useRef<Record<string, number>>({ current: 0, prev: 0 });
+    const listItemRef = useRef<Array<Record<string | number, any>>>([]);
+    const itemRef = useRef<Record<string | number, any>>({});
 
     const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
       if (!action.delete) {
@@ -189,76 +180,105 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
 
     const handleItemDragStart = (event: PointerEvent) => {
       const { target } = event;
-      itemRef.current = target as HTMLSpanElement;
-      itemPos.current = [];
-      order.current = parseInt(itemRef.current?.id ?? "0");
-      let firstPos = 0;
-      let secondPos = aListRef.current[1]?.clientHeight ?? 0;
-      Object.keys(aListRef.current).forEach((itemElement, idx) => {
-        itemPos.current.push([firstPos, secondPos]);
-        firstPos = secondPos;
-        secondPos += aListRef.current[idx + 2]?.clientHeight ?? 0;
-      });
-    };
+      let paddingOffsets = 0;
+      if (
+        ref &&
+        typeof ref !== "function" &&
+        (target as HTMLElement).children.length === 0
+      ) {
+        paddingOffsets =
+          (($(ref.current as HTMLDivElement).innerHeight() ?? 0) -
+            ($(ref.current as HTMLDivElement).height() ?? 0)) /
+          2;
 
-    let moveDirection: moveDirectionType = {
-      initialPos: null,
-      differnce: 0,
+        itemRef.current = {
+          initialPosition: (target as HTMLElement).offsetTop - paddingOffsets,
+          savePoint: (target as HTMLElement).offsetTop - paddingOffsets,
+          currentPosition: (target as HTMLElement).offsetTop - paddingOffsets,
+          order: parseInt((target as HTMLElement).id),
+          height: (target as HTMLElement).clientHeight,
+          node: target,
+          grabbedAt: event.y,
+          boundingBox: (ref.current?.clientHeight ?? 0) - paddingOffsets * 2,
+        };
+
+        Object.keys(aListRef.current).forEach((node) => {
+          let itemNode = aListRef.current[node];
+          if (itemNode !== itemRef.current.node && itemNode) {
+            console.log(itemNode?.id);
+            listItemRef.current.push({
+              initialPosition: itemNode.offsetTop - paddingOffsets,
+              currentPosition: itemNode.offsetTop - paddingOffsets,
+              order: parseInt(itemNode.id),
+              height: itemNode.clientHeight,
+              node: itemNode,
+              boundingBox:
+                (ref.current?.clientHeight ?? 0) - paddingOffsets * 2,
+              movedAmount: 0,
+            });
+          }
+        });
+
+        console.log(listItemRef);
+      }
     };
 
     const handleItemDrag = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
-      let hoveredItemPosition: number;
-      if (!moveDirection.initialPos) moveDirection.initialPos = event.y;
-      moveDirection.differnce = moveDirection.initialPos - event.y;
-
-      hoveredItemPosition =
-        (itemRef.current?.offsetTop ?? 0) -
-        moveDirection.differnce +
-        (itemRef.current?.clientHeight ?? 0) / 2;
-
-      itemPos.current.forEach((pos, idx) => {
-        let amountToMove = itemRef.current?.clientHeight ?? 0;
+      let amountMoved = itemRef.current.grabbedAt - event.y;
+      itemRef.current.currentPosition =
+        itemRef.current.initialPosition - amountMoved;
+      listItemRef.current.forEach((item) => {
         if (
-          direction.current.prev !== direction.current.current &&
-          direction.current.prev !== 0
-        )
-          amountToMove = 0;
-        if (hoveredItemPosition > pos[0] && hoveredItemPosition < pos[1]) {
-          if ((order.current ?? 0) > idx + 1) {
-            if (direction.current.prev === 0) direction.current.prev = 1;
-            direction.current.current = 1;
-          } else if ((order.current ?? 0) < idx + 1) {
-            if (direction.current.prev === 0) direction.current.prev = -1;
-            direction.current.current = -1;
-          }
-          order.current = idx + 1;
-          console.log(aListRef.current);
-          if (
-            aListRef.current[order.current + direction.current.current] !==
-            itemRef.current
-          ) {
-            gsap.to(
-              aListRef.current[order.current + direction.current.current],
-              {
-                y: amountToMove * direction.current.current,
-                onComplete: () => {
-                  stopAnimOverlap.current = false;
-                },
-              }
-            );
-          }
+          itemRef.current.currentPosition > item.currentPosition &&
+          itemRef.current.currentPosition < item.currentPosition + item.height
+        ) {
+          [itemRef.current.order, item.order] = [
+            item.order,
+            itemRef.current.order,
+          ];
+
+          item.movedAmount += itemRef.current.savePoint - item.initialPosition;
+
+          gsap.to(item.node, {
+            y: item.movedAmount,
+          });
+
+          item.currentPosition = itemRef.current.savePoint;
+          itemRef.current.savePoint = item.initialPosition;
+          item.initialPosition = item.currentPosition;
+
+          // console.log(item, itemRef.current);
         }
       });
-      // console.log(order.current);
+
+      if (itemRef.current.currentPosition < 0) {
+        itemRef.current.order = 1;
+        itemRef.current.currentPosition = 0;
+      } else if (
+        itemRef.current.currentPosition > itemRef.current.boundingBox
+      ) {
+        itemRef.current.order = listItemRef.current.length + 1;
+        itemRef.current.currentPosition =
+          itemRef.current.boundingBox - itemRef.current.height;
+      }
     };
 
     const handleItemDrop = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
       const { target } = event;
-      returnBack.current = false;
+      console.log(itemRef.current);
+      gsap.to(itemRef.current.node, {});
+      itemRef.current.currentPosition = itemRef.current.initialPosition;
+      itemRef.current.savePoint = itemRef.current.initialPosition;
+      listItemRef.current.forEach((item) => {
+        console.log(item);
+      });
+
+      listItemRef.current = [];
+      itemRef.current = {};
     };
 
     const listElement = (idx: number, order: string) => {
