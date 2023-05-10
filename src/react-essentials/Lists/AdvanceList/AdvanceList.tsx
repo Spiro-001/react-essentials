@@ -55,6 +55,11 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     }: AdvanceListProp,
     ref
   ) {
+    interface moveDirectionType {
+      initialPos: number | null;
+      differnce: number | null;
+    }
+
     const [listObjects, setListObjects] =
       useState<Record<number, string>>(listObjectsProp);
     const [gsapTimeLine, setGsapTimeline] = useState<GSAPTween | null>(null);
@@ -73,9 +78,11 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     );
     const itemRef = useRef<HTMLSpanElement | null>(null);
     const itemOverRef = useRef<HTMLSpanElement | null>(null);
-    const itemPos = useRef<Array<number>>([]);
+    const itemPos = useRef<Array<Array<number>>>([]);
     const order = useRef<number | null>(null);
     const returnBack = useRef<boolean>(false);
+    const stopAnimOverlap = useRef<boolean>(false);
+    const direction = useRef<Record<string, number>>({ current: 0, prev: 0 });
 
     const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
       if (!action.delete) {
@@ -183,66 +190,74 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     const handleItemDragStart = (event: PointerEvent) => {
       const { target } = event;
       itemRef.current = target as HTMLSpanElement;
+      itemPos.current = [];
       order.current = parseInt(itemRef.current?.id ?? "0");
-      itemPos.current = [0];
+      let firstPos = 0;
+      let secondPos = aListRef.current[1]?.clientHeight ?? 0;
       Object.keys(aListRef.current).forEach((itemElement, idx) => {
-        itemPos.current.push(
-          (isNaN(itemPos.current[idx - 1]) ? 0 : itemPos.current[idx]) +
-            (aListRef.current[itemElement]?.clientHeight ?? 0)
-        );
+        itemPos.current.push([firstPos, secondPos]);
+        firstPos = secondPos;
+        secondPos += aListRef.current[idx + 2]?.clientHeight ?? 0;
       });
     };
 
-    let moveDirection = { direction: 0 };
+    let moveDirection: moveDirectionType = {
+      initialPos: null,
+      differnce: 0,
+    };
 
     const handleItemDrag = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
       let hoveredItemPosition: number;
+      if (!moveDirection.initialPos) moveDirection.initialPos = event.y;
+      moveDirection.differnce = moveDirection.initialPos - event.y;
 
-      if (ref && typeof ref !== "function") {
-        hoveredItemPosition = event.screenY - (ref.current?.offsetHeight ?? 0);
-        console.log(order.current, hoveredItemPosition);
-      }
-
-      console.log(itemPos.current);
+      hoveredItemPosition =
+        (itemRef.current?.offsetTop ?? 0) -
+        moveDirection.differnce +
+        (itemRef.current?.clientHeight ?? 0) / 2;
 
       itemPos.current.forEach((pos, idx) => {
-        if (hoveredItemPosition) {
-          if (itemPos.current[idx + 1]) {
-            if (
-              hoveredItemPosition > pos &&
-              hoveredItemPosition < itemPos.current[idx + 1]
-            )
-              order.current = idx + 1;
-            else if (hoveredItemPosition < 0) order.current = 1;
-            else if (
-              hoveredItemPosition > itemPos.current[itemPos.current.length - 1]
-            )
-              order.current = itemPos.current.length - 1;
+        let amountToMove = itemRef.current?.clientHeight ?? 0;
+        if (
+          direction.current.prev !== direction.current.current &&
+          direction.current.prev !== 0
+        )
+          amountToMove = 0;
+        if (hoveredItemPosition > pos[0] && hoveredItemPosition < pos[1]) {
+          if ((order.current ?? 0) > idx + 1) {
+            if (direction.current.prev === 0) direction.current.prev = 1;
+            direction.current.current = 1;
+          } else if ((order.current ?? 0) < idx + 1) {
+            if (direction.current.prev === 0) direction.current.prev = -1;
+            direction.current.current = -1;
           }
-        } else {
-          returnBack.current = true;
+          order.current = idx + 1;
+          console.log(aListRef.current);
+          if (
+            aListRef.current[order.current + direction.current.current] !==
+            itemRef.current
+          ) {
+            gsap.to(
+              aListRef.current[order.current + direction.current.current],
+              {
+                y: amountToMove * direction.current.current,
+                onComplete: () => {
+                  stopAnimOverlap.current = false;
+                },
+              }
+            );
+          }
         }
       });
+      // console.log(order.current);
     };
 
     const handleItemDrop = (event: PointerEvent) => {
       event.stopPropagation();
       event.preventDefault();
       const { target } = event;
-      if (itemRef.current && !returnBack.current) {
-        const copyList: Record<number, string> = structuredClone(listObjects);
-        let fromValue = parseInt(itemRef.current?.id) - 1;
-        if (fromValue) {
-          setListObjects((prevList) => {
-            copyList[fromValue] = prevList[order.current ?? fromValue];
-            copyList[order.current ?? fromValue] = prevList[fromValue];
-            return copyList;
-          });
-          if (setListObjectsProp) setListObjectsProp(copyList);
-        }
-      }
       returnBack.current = false;
     };
 
