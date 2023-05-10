@@ -22,8 +22,8 @@ type AdvanceListProp = {
     manageList: React.Dispatch<React.SetStateAction<Record<number, string>>>
   ): void;
   ifEmpty?: any;
-  listObjectsProp?: Record<number, string>;
-  setListObjectsProp?: React.Dispatch<
+  listObjectsProp: Record<number | string, string>;
+  setListObjectsProp: React.Dispatch<
     React.SetStateAction<Record<number, string>>
   >;
   draggable?: boolean;
@@ -74,6 +74,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     );
     const listItemRef = useRef<Array<Record<string | number, any>>>([]);
     const itemRef = useRef<Record<string | number, any>>({});
+    console.log(listObjectsProp);
+    console.log(aListRef.current);
 
     const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
       if (!action.delete) {
@@ -82,11 +84,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           gsap.to(element.target, {
             ...aSetting,
             onComplete: () => {
-              onClick(
-                element,
-                setListObjectsProp ? listObjectsProp : listObjects,
-                setListObjectsProp ? setListObjectsProp : setListObjects
-              );
+              onClick(element, listObjectsProp, setListObjectsProp);
               setAction((prevAction) => {
                 return {
                   ...prevAction,
@@ -115,9 +113,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
 
       const bListKeys = Object.keys(aListRef.current);
       const lastIndex = bListKeys?.pop();
-      const newObjectListLength = Object.keys(
-        setListObjectsProp ? listObjectsProp : listObjects
-      ).length;
+      const newObjectListLength = Object.keys(listObjectsProp).length;
 
       const noItemFadeIn = gsap.to(noListRef.current, {
         opacity: 0,
@@ -151,7 +147,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         noItemFadeIn.progress(1);
         noItemFadeIn.reverse();
       }
-    }, [setListObjectsProp ? listObjectsProp : listObjects]);
+    }, [listObjectsProp]);
 
     useLayoutEffect(() => {
       gsap.registerPlugin(Draggable);
@@ -175,6 +171,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           onDragEnd: (event) => handleItemDrop(event),
         });
         minY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
+        gsap.set(aListRef.current[listElementKey], { clearProps: "all" });
       });
     });
 
@@ -219,6 +216,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           }
         });
 
+        listItemRef.current.push(itemRef.current);
+
         console.log(listItemRef);
       }
     };
@@ -248,8 +247,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           item.currentPosition = itemRef.current.savePoint;
           itemRef.current.savePoint = item.initialPosition;
           item.initialPosition = item.currentPosition;
-
-          // console.log(item, itemRef.current);
         }
       });
 
@@ -273,10 +270,24 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       gsap.to(itemRef.current.node, {});
       itemRef.current.currentPosition = itemRef.current.initialPosition;
       itemRef.current.savePoint = itemRef.current.initialPosition;
+
+      var newList: Record<number | string, any> = {};
+      var swapValue: Array<number> = [];
       listItemRef.current.forEach((item) => {
-        console.log(item);
+        newList[item.order] = parseInt(item.node.id);
       });
 
+      console.log(newList, swapValue);
+
+      setListObjectsProp((prevList) => {
+        var copyList: Record<number | string, any> = {};
+        Object.keys(newList).forEach((newListKey) => {
+          copyList[newListKey] = prevList[newList[newListKey]];
+        });
+        console.log(copyList);
+        return copyList;
+      });
+      console.log(aListRef.current, listObjectsProp);
       listItemRef.current = [];
       itemRef.current = {};
     };
@@ -297,11 +308,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       );
     };
 
-    if (
-      Object.keys(setListObjectsProp ? listObjectsProp : listObjects).length !==
-        0 ||
-      children
-    ) {
+    if (Object.keys(listObjectsProp).length !== 0 || children) {
       return (
         <>
           <div style={defaultStyle} className="advance-list" ref={ref}>
