@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import React, { forwardRef, MouseEvent } from "react";
+import React, { MouseEvent } from "react";
 import "./BasicButton.css";
 
 type BasicButtonProps = {

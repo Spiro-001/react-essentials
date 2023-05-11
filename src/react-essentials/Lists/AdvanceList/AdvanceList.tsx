@@ -16,11 +16,8 @@ type AdvanceListProp = {
   styleNoItems?: React.CSSProperties;
   listItemStyle?: React.CSSProperties;
   aSetting?: Record<string, string | number>;
-  onClick(
-    event: any,
-    list: Record<number, string>,
-    manageList: React.Dispatch<React.SetStateAction<Record<number, string>>>
-  ): void;
+  onClick?(): void;
+  listClick?(element?: React.MouseEvent<HTMLSpanElement>): void;
   ifEmpty?: any;
   listObjectsProp: Record<number | string, string>;
   setListObjectsProp: React.Dispatch<
@@ -49,7 +46,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         padding: "0px 24px",
         duration: 0.3,
       },
-      onClick,
+      onClick = () => {},
+      listClick = () => {},
       listObjectsProp = {},
       setListObjectsProp,
       ifEmpty = "This list is empty.",
@@ -66,6 +64,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       new: false,
       deleteFromExternal: false,
     });
+    const [listStuck, setListStuck] = useState<number>(0);
 
     const aListRef = useRef<Record<string, HTMLSpanElement | null>>({});
     const noListRef = useRef<HTMLDivElement | null>(null);
@@ -83,29 +82,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     });
     const gsapAnimRunning = useRef<boolean>(false);
 
-    const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
-      if (!action.delete) {
-        // prevent overlap
-        setGsapTimeline(
-          gsap.to(element.target, {
-            ...aSetting,
-            onComplete: () => {
-              onClick(element, listObjectsProp, setListObjectsProp);
-              setAction((prevAction) => {
-                return {
-                  ...prevAction,
-                  delete: false,
-                  deleteFromExternal: false,
-                };
-              });
-              listLength.current -= 1;
-            },
-          })
-        );
-        setAction((prevAction) => {
-          return { ...prevAction, delete: true, deleteFromExternal: false };
-        });
-      }
+    const lClick = (element?: React.MouseEvent<HTMLSpanElement>) => {
+      listClick(element);
     };
 
     useEffect(() => {
@@ -121,82 +99,102 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       const lastIndex = bListKeys?.pop();
       const newObjectListLength = Object.keys(listObjectsProp).length;
 
-      const noItemFadeIn = gsap.to(noListRef.current, {
-        opacity: 0,
-        height: 0,
-        padding: "0px 24px",
-        duration: 0.3,
-      });
-
-      const newItemFadeIn = gsap
-        .to(aListRef.current[lastIndex ? parseInt(lastIndex) : 1], {
+      if (noListRef.current) {
+        const noItemFadeIn = gsap.to(noListRef.current, {
           opacity: 0,
           height: 0,
           padding: "0px 24px",
           duration: 0.3,
-        })
-        .pause();
-
-      if (listLength.current < newObjectListLength) {
-        // item added
-        listLength.current += 1;
-        newItemFadeIn.progress(1).reverse();
-      } else if (listLength.current > newObjectListLength) {
-        // item removed
-        setAction((prevAction) => {
-          return { ...prevAction, deleteFromExternal: true };
         });
-        listLength.current -= 1;
+
+        if (newObjectListLength === 0) {
+          noItemFadeIn.progress(1);
+          noItemFadeIn.reverse();
+        }
       }
 
-      if (newObjectListLength === 0) {
-        noItemFadeIn.progress(1);
-        noItemFadeIn.reverse();
+      if (aListRef.current[lastIndex ? parseInt(lastIndex) : 1]) {
+        const newItemFadeIn = gsap
+          .to(aListRef.current[lastIndex ? parseInt(lastIndex) : 1], {
+            opacity: 0,
+            height: 0,
+            padding: "0px 24px",
+            duration: 0.3,
+          })
+          .pause();
+
+        if (listLength.current < newObjectListLength) {
+          // item added
+          listLength.current += 1;
+          newItemFadeIn.progress(1).reverse();
+        } else if (listLength.current > newObjectListLength) {
+          // item removed
+          setAction((prevAction) => {
+            return { ...prevAction, deleteFromExternal: true };
+          });
+          listLength.current -= 1;
+        }
       }
-    }, [listObjectsProp]);
+      console.log(listObjectsProp);
+    }, [listObjectsProp, listStuck]);
 
     useLayoutEffect(() => {
       gsap.registerPlugin(Draggable);
       if (draggable) {
         let minY: number = 0;
         let maxY: number;
-        let padding: number;
+        let maxX: number;
+        let clientWidth: number;
         let paddingOffsets: number;
         if (typeof ref !== "function" && ref) {
           maxY = ref.current?.clientHeight ?? 0;
+          maxX = ref.current?.clientWidth ?? 0;
           paddingOffsets = $(ref.current as HTMLDivElement).innerHeight() ?? 0;
           paddingOffsets -= $(ref.current as HTMLDivElement).height() ?? 0;
         }
         Object.keys(aListRef.current).forEach((listElementKey: string) => {
-          maxY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
-          gsap.fromTo(
-            aListRef.current[listElementKey],
-            { y: 0 },
-            {
-              y: 0,
-            }
-          );
-          Draggable.create(aListRef.current[listElementKey], {
-            type: "y",
-            bounds: { minY: minY, maxY: maxY - paddingOffsets },
-            onDragStart: (event) => handleItemDragStart(event),
-            onDrag: (event) => handleItemDrag(event),
-            onDragEnd: (event) => handleItemDrop(event),
-          });
-          minY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
+          if (aListRef.current[listElementKey]) {
+            clientWidth = aListRef.current[listElementKey]?.clientWidth ?? 0;
+            maxY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
+            gsap.fromTo(
+              aListRef.current[listElementKey],
+              { y: 0, x: 0 },
+              {
+                y: 0,
+                x: 0,
+              }
+            );
+            Draggable.create(aListRef.current[listElementKey], {
+              type: "x,y",
+              bounds: {
+                minY: minY - 12,
+                maxY: maxY - paddingOffsets,
+                minX: 0,
+                maxX: maxX - clientWidth,
+              },
+              onDragStart: (event) => handleItemDragStart(event),
+              onDrag: (event) => handleItemDrag(event),
+              onDragEnd: (event) => handleItemDrop(event),
+            });
+            minY -= (aListRef.current[listElementKey]?.clientHeight ?? 0) + 12;
+          }
         });
       }
-    }, [listObjectsProp]);
+    }, [listObjectsProp, listStuck]);
 
     const handleItemDragStart = (event: PointerEvent) => {
       const { target } = event;
       let paddingOffsets = 0;
+      console.log(
+        dragCurrent.current.onDragStart,
+        Object.keys(itemRef.current).length
+      );
       if (
         ref &&
         typeof ref !== "function" &&
         (target as HTMLElement).children.length === 0 &&
         !dragCurrent.current.onDragStart &&
-        Object.keys(itemRef.current).length === 0
+        Object.keys(itemRef.current).length <= 1
       ) {
         dragCurrent.current.onDragStart = true;
         paddingOffsets =
@@ -245,50 +243,48 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         });
 
         listItemRef.current.push(itemRef.current);
+        console.log(listItemRef.current);
       }
     };
 
     const handleItemDrag = (event: PointerEvent) => {
-      if (itemRef.current.node === event.target) {
-        let amountMoved = itemRef.current.grabbedAt - event.y;
-        itemRef.current.currentPosition =
-          itemRef.current.initialPosition - amountMoved;
-        listItemRef.current.forEach((item) => {
-          if (
-            itemRef.current.currentPosition > item.currentPosition &&
-            itemRef.current.currentPosition <
-              item.currentPosition + item.height - 20
-          ) {
-            [itemRef.current.order, item.order] = [
-              item.order,
-              itemRef.current.order,
-            ];
-
-            item.movedAmount +=
-              itemRef.current.savePoint - item.initialPosition;
-
-            let tweenMoveItem = gsap.to(item.node, {
-              y: item.movedAmount,
-              duration: 0.3,
-            });
-
-            tweenMoveItem.play();
-
-            item.currentPosition = itemRef.current.savePoint;
-            itemRef.current.savePoint = item.initialPosition;
-            item.initialPosition = item.currentPosition;
-          }
-        });
-        if (itemRef.current.currentPosition < 0) {
-          itemRef.current.order = 1;
-          itemRef.current.currentPosition = 0;
-        } else if (
-          itemRef.current.currentPosition > itemRef.current.boundingBox
+      let amountMoved = itemRef.current.grabbedAt - event.y;
+      itemRef.current.currentPosition =
+        itemRef.current.initialPosition - amountMoved;
+      listItemRef.current.forEach((item) => {
+        if (
+          itemRef.current.currentPosition > item.currentPosition &&
+          itemRef.current.currentPosition <
+            item.currentPosition + item.height - 20
         ) {
-          itemRef.current.order = listItemRef.current.length + 1;
-          itemRef.current.currentPosition =
-            itemRef.current.boundingBox - itemRef.current.height;
+          [itemRef.current.order, item.order] = [
+            item.order,
+            itemRef.current.order,
+          ];
+
+          item.movedAmount += itemRef.current.savePoint - item.initialPosition;
+
+          let tweenMoveItem = gsap.to(item.node, {
+            y: item.movedAmount,
+            duration: 0.3,
+          });
+
+          tweenMoveItem.play();
+
+          item.currentPosition = itemRef.current.savePoint;
+          itemRef.current.savePoint = item.initialPosition;
+          item.initialPosition = item.currentPosition;
         }
+      });
+      if (itemRef.current.currentPosition < 0) {
+        itemRef.current.order = 1;
+        itemRef.current.currentPosition = 0;
+      } else if (
+        itemRef.current.currentPosition > itemRef.current.boundingBox
+      ) {
+        itemRef.current.order = listItemRef.current.length + 1;
+        itemRef.current.currentPosition =
+          itemRef.current.boundingBox - itemRef.current.height;
       }
     };
 
@@ -296,11 +292,17 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       event.stopPropagation();
       event.preventDefault();
       const { target } = event;
+      console.log(
+        Object.keys(itemRef.current).length,
+        dragCurrent.current.onDragEnd,
+        listItemRef.current.length
+      );
       if (
         !dragCurrent.current.onDragEnd &&
         Object.keys(itemRef.current).length !== 0 &&
         listItemRef.current.length !== 0
       ) {
+        console.log(listItemRef.current);
         dragCurrent.current.onDragEnd = true;
         gsap.fromTo(
           itemRef.current.node,
@@ -316,6 +318,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         gsap
           .to(itemRef.current.node, {
             top: itemRef.current.savePoint - itemRef.current.currentPosition,
+            x: 0,
             position: "relative",
             duration: 0.2,
             ease: "power4.out",
@@ -330,16 +333,16 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
               gsap.set(item.node, { clearProps: "top" });
               newList[item.order] = parseInt(item.node.id);
             });
-            console.log(newList);
             setListObjectsProp((prevList) => {
               var copyList: Record<number | string, any> = {};
               Object.keys(newList).forEach((newListKey) => {
                 copyList[newListKey] = prevList[newList[newListKey]];
-                gsap.set(aListRef.current[newListKey], {
-                  clearProps: "top",
-                });
+                if (aListRef.current[newListKey]) {
+                  gsap.set(aListRef.current[newListKey], {
+                    clearProps: "top",
+                  });
+                }
               });
-              console.log(copyList);
               return copyList;
             });
             listItemRef.current = [];
@@ -381,17 +384,19 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
                 key={"deadNode"}
                 id={"deadNode"}
                 ref={(deletedNodeRef) => {
-                  const removeItemFadeIn = gsap.to(deletedNodeRef, {
-                    opacity: 0,
-                    height: 0,
-                    padding: "0px 24px",
-                    duration: 0.3,
-                    onComplete: () => {
-                      setAction((prevAction) => {
-                        return { ...prevAction, deleteFromExternal: false };
-                      });
-                    },
-                  });
+                  if (deletedNodeRef) {
+                    const removeItemFadeIn = gsap.to(deletedNodeRef, {
+                      opacity: 0,
+                      height: 0,
+                      padding: "0px 24px",
+                      duration: 0.3,
+                      onComplete: () => {
+                        setAction((prevAction) => {
+                          return { ...prevAction, deleteFromExternal: false };
+                        });
+                      },
+                    });
+                  }
                 }}
               ></span>
             )}

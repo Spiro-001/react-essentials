@@ -18,10 +18,10 @@ export const Demo = () => {
   const aListRef = useRef<HTMLDivElement>(null);
 
   const [listObjects, setListObjects] = useState<Record<number, string>>({
-    1: "bob",
-    2: "charles",
-    3: "doggy",
-    4: "mark",
+    1: "Doug",
+    2: "Charles",
+    3: "Ryan",
+    4: "Mark",
   });
 
   const [aListObjects, aSetListObjects] = useState<Record<number, string>>({
@@ -45,6 +45,8 @@ export const Demo = () => {
       { y: 0, opacity: 1, duration: 0.5, delay: 0.2 }
     );
   }, []);
+
+  UseOnClickOutside(aButtonRef, () => {});
 
   const lockedDemo = () => {
     return (
@@ -104,8 +106,6 @@ export const Demo = () => {
     }
   };
 
-  UseOnClickOutside(aButtonRef, () => {});
-
   const handleClickA = () => {
     if (Object.keys(listObjects).length)
       setListObjects((prevList) => {
@@ -130,20 +130,47 @@ export const Demo = () => {
     }
   };
 
-  const handleListA = (
-    event: any,
-    list: Record<number, string>,
-    manageList?: any
-  ) => {
-    UseDeleteListItem(event, list, manageList);
+  const aHandleClickA = () => {
+    if (Object.keys(aListObjects).length)
+      aSetListObjects((prevList) => {
+        const copyList = structuredClone(prevList);
+        let lastKey: any = Object.keys(copyList).pop();
+        delete copyList[lastKey];
+        return copyList;
+      });
   };
 
-  const handleListB = (
-    event: any,
-    list: Record<number, string>,
-    manageList?: any
-  ) => {
-    UseDeleteListItem(event, list, manageList);
+  const aHandleClickB = () => {
+    if (input) {
+      aSetListObjects((prevList) => {
+        const copyList = structuredClone(prevList);
+        let lastKey = parseInt(
+          Object.keys(copyList)[Object.keys(copyList).length - 1]
+        );
+        copyList[lastKey ? lastKey + 1 : 1] = input;
+        setInput("");
+        return copyList;
+      });
+    }
+  };
+
+  var containerStyle: React.CSSProperties = {
+    gap: 0,
+    height: "500px",
+    justifyContent: "space-between",
+    alignItems: "space-between",
+    border: "1px solid red",
+    borderRadius: "8px",
+    overflow: "hidden",
+    padding: "12px 0px",
+    backgroundColor: "white",
+  };
+  var buttonContainerStyle: React.CSSProperties = {
+    backgroundColor: "white",
+    height: "fit-content",
+    width: "100%",
+    padding: "12px",
+    boxSizing: "border-box",
   };
 
   return (
@@ -153,24 +180,92 @@ export const Demo = () => {
         {locked && lockedDemo()}
         {!locked && (
           <>
-            <BasicButton onClick={handleClickB} value="Add new item to list" />
-            <AdvanceButton
-              onClick={handleClickA}
-              value="Delete last item from list"
-              ref={aButtonRef}
-            />
-            <BasicList
-              onClick={handleListA}
-              listObjectsProp={listObjects}
-              setListObjectsProp={setListObjects}
-            />
-            <AdvanceList
-              onClick={handleListB}
-              listObjectsProp={aListObjects}
-              setListObjectsProp={aSetListObjects}
-              draggable={true}
-              ref={aListRef}
-            />
+            <div className="container" style={containerStyle}>
+              <BasicList
+                onClick={() => {}}
+                listObjectsProp={listObjects}
+                setListObjectsProp={setListObjects}
+                defaultStyle={{
+                  padding: "24px 0px",
+                  borderRadius: "0px",
+                  border: 0,
+                  gap: "12px",
+                  height: "100%",
+                }}
+                styleNoItems={{
+                  width: "200px",
+                  borderRadius: "6px",
+                  backgroundColor: "white",
+                }}
+                listItemStyle={{
+                  width: "200px",
+                  borderRadius: "6px",
+                  backgroundColor: "white",
+                }}
+              >
+                {Object.keys(listObjects).map((listItem) => {
+                  return (
+                    <div
+                      className="list-item"
+                      style={{ width: "200px" }}
+                      key={listItem}
+                    >
+                      {listObjects[parseInt(listItem)]}
+                    </div>
+                  );
+                })}
+              </BasicList>
+              <div className="container" style={buttonContainerStyle}>
+                <BasicButton
+                  onClick={handleClickB}
+                  value="Add new item to list"
+                  bStyle={{ width: "100%", textAlign: "center" }}
+                />
+                <AdvanceButton
+                  onClick={handleClickA}
+                  value="Delete last item from list"
+                  ref={aButtonRef}
+                />
+              </div>
+            </div>
+            <div className="container" style={containerStyle}>
+              <AdvanceList
+                onClick={() => {}}
+                listClick={() => {}}
+                listObjectsProp={aListObjects}
+                setListObjectsProp={aSetListObjects}
+                draggable={true}
+                defaultStyle={{
+                  padding: "24px 0",
+                  borderRadius: "0px",
+                  border: 0,
+                  gap: "12px",
+                }}
+                styleNoItems={{
+                  padding: "0px",
+                  borderRadius: "0px",
+                  backgroundColor: "white",
+                }}
+                listItemStyle={{
+                  width: "200px",
+                  backgroundColor: "white",
+                }}
+                ref={aListRef}
+              />
+              <div className="container" style={buttonContainerStyle}>
+                <BasicButton
+                  onClick={aHandleClickB}
+                  value="Add new item to list"
+                  bStyle={{ width: "100%", textAlign: "center" }}
+                />
+                <AdvanceButton
+                  onClick={aHandleClickA}
+                  value="Delete last item from list"
+                  ref={aButtonRef}
+                />
+              </div>
+            </div>
+
             <BasicInputs
               listStates={[input, setInput]}
               bStyle={{ padding: "12px 24px 12px 6px" }}

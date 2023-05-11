@@ -1,5 +1,6 @@
 import gsap from "gsap";
-import { useEffect, useRef, useState } from "react";
+import { Children, cloneElement, useEffect, useRef, useState } from "react";
+import { UseDeleteListItem } from "../../Hooks/UseDeleteListItem";
 import "./BasicList.css";
 
 type BasicListProp = {
@@ -7,11 +8,7 @@ type BasicListProp = {
   styleNoItems?: React.CSSProperties;
   listItemStyle?: React.CSSProperties;
   aSetting?: Record<string, string | number>;
-  onClick(
-    event: any,
-    list: Record<number, string>,
-    manageList: React.Dispatch<React.SetStateAction<Record<number, string>>>
-  ): void;
+  onClick(): void;
   ifEmpty?: any;
   listObjectsProp?: Record<number, string>;
   setListObjectsProp?: React.Dispatch<
@@ -22,6 +19,7 @@ type BasicListProp = {
 
 export const BasicList = ({
   defaultStyle = {
+    minHeight: "300px",
     minWidth: "200px",
   },
   styleNoItems = {
@@ -66,9 +64,9 @@ export const BasicList = ({
         gsap.to(element.target, {
           ...aSetting,
           onComplete: () => {
-            onClick(
+            UseDeleteListItem(
               element,
-              setListObjectsProp ? listObjectsProp : listObjects,
+              listObjectsProp,
               setListObjectsProp ? setListObjectsProp : setListObjects
             );
             setAction((prevAction) => {
@@ -103,37 +101,40 @@ export const BasicList = ({
       setListObjectsProp ? listObjectsProp : listObjects
     ).length;
 
-    const noItemFadeIn = gsap.to(noListRef.current, {
-      opacity: 0,
-      height: 0,
-      padding: "0px 24px",
-      duration: 0.3,
-    });
-
-    const newItemFadeIn = gsap
-      .to(bListRef.current[lastIndex ? parseInt(lastIndex) : 1], {
+    if (noListRef.current) {
+      const noItemFadeIn = gsap.to(noListRef.current, {
         opacity: 0,
         height: 0,
         padding: "0px 24px",
         duration: 0.3,
-      })
-      .pause();
-
-    if (listLength.current < newObjectListLength) {
-      // item added
-      listLength.current += 1;
-      newItemFadeIn.progress(1).reverse();
-    } else if (listLength.current > newObjectListLength) {
-      // item removed
-      setAction((prevAction) => {
-        return { ...prevAction, deleteFromExternal: true };
       });
-      listLength.current -= 1;
+
+      if (newObjectListLength === 0) {
+        noItemFadeIn.progress(1);
+        noItemFadeIn.reverse();
+      }
     }
 
-    if (newObjectListLength === 0) {
-      noItemFadeIn.progress(1);
-      noItemFadeIn.reverse();
+    if (bListRef.current[lastIndex ? parseInt(lastIndex) : 1]) {
+      const newItemFadeIn = gsap
+        .to(bListRef.current[lastIndex ? parseInt(lastIndex) : 1], {
+          opacity: 0,
+          height: 0,
+          padding: "0px 24px",
+          duration: 0.3,
+        })
+        .pause();
+      if (listLength.current < newObjectListLength) {
+        // item added
+        listLength.current += 1;
+        newItemFadeIn.progress(1).reverse();
+      } else if (listLength.current > newObjectListLength) {
+        // item removed
+        setAction((prevAction) => {
+          return { ...prevAction, deleteFromExternal: true };
+        });
+        listLength.current -= 1;
+      }
     }
   }, [setListObjectsProp ? listObjectsProp : listObjects]);
 
@@ -141,6 +142,7 @@ export const BasicList = ({
     return (
       <span
         onClick={lClick}
+        style={listItemStyle}
         className="list-item"
         key={idx}
         id={order}
@@ -153,38 +155,50 @@ export const BasicList = ({
     );
   };
 
+  const listElementChildren = (child: any, idx: number) => {
+    let clonedElement = cloneElement(child);
+    return <>{clonedElement}</>;
+  };
+
   if (
-    Object.keys(setListObjectsProp ? listObjectsProp : listObjects).length !==
-      0 ||
-    children
+    Object.keys(listObjectsProp).length !== 0 ||
+    Children.count(children) !== 0
   ) {
     return (
       <>
-        <div style={defaultStyle} className="basic-list" ref={bListDivRef}>
+        <div
+          style={defaultStyle}
+          className="basic-list"
+          ref={bListDivRef}
+          onClick={onClick}
+        >
           {children
-            ? children
+            ? Children.map(children, (child, idx) => {
+                return listElementChildren(child, idx);
+              })
             : Object.keys(listObjectsProp).map((order, idx) => {
                 return listElement(idx, order);
               })}
           {action.deleteFromExternal && (
             <span
               onClick={lClick}
-              style={listItemStyle}
               className="list-item"
               key={"deadNode"}
               id={"deadNode"}
               ref={(deletedNodeRef) => {
-                const removeItemFadeIn = gsap.to(deletedNodeRef, {
-                  opacity: 0,
-                  height: 0,
-                  padding: "0px 24px",
-                  duration: 0.3,
-                  onComplete: () => {
-                    setAction((prevAction) => {
-                      return { ...prevAction, deleteFromExternal: false };
-                    });
-                  },
-                });
+                if (deletedNodeRef) {
+                  const removeItemFadeIn = gsap.to(deletedNodeRef, {
+                    opacity: 0,
+                    height: 0,
+                    padding: "0px 24px",
+                    duration: 0.3,
+                    onComplete: () => {
+                      setAction((prevAction) => {
+                        return { ...prevAction, deleteFromExternal: false };
+                      });
+                    },
+                  });
+                }
               }}
             ></span>
           )}
@@ -193,8 +207,8 @@ export const BasicList = ({
     );
   }
   return (
-    <div style={styleNoItems} className="basic-list">
-      <span className="list-item" ref={noListRef}>
+    <div style={defaultStyle} className="basic-list" onClick={onClick}>
+      <span className="list-item" ref={noListRef} style={styleNoItems}>
         {ifEmpty}
       </span>
     </div>
