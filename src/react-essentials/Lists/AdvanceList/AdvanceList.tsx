@@ -296,7 +296,11 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       event.stopPropagation();
       event.preventDefault();
       const { target } = event;
-      if (!dragCurrent.current.onDragEnd) {
+      if (
+        !dragCurrent.current.onDragEnd &&
+        Object.keys(itemRef.current).length !== 0 &&
+        listItemRef.current.length !== 0
+      ) {
         dragCurrent.current.onDragEnd = true;
         gsap.fromTo(
           itemRef.current.node,
