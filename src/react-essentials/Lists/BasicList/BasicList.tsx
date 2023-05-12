@@ -150,14 +150,10 @@ export const BasicList = ({
           bListRef.current[order] = ref;
         }}
       >
-        {listObjectsProp[parseInt(order)]}
+        {children && Children.toArray(children)[idx]}
+        {!children && listObjectsProp[parseInt(order)]}
       </span>
     );
-  };
-
-  const listElementChildren = (child: any, idx: number) => {
-    let clonedElement = cloneElement(child);
-    return <>{clonedElement}</>;
   };
 
   if (
@@ -172,13 +168,9 @@ export const BasicList = ({
           ref={bListDivRef}
           onClick={onClick}
         >
-          {children
-            ? Children.map(children, (child, idx) => {
-                return listElementChildren(child, idx);
-              })
-            : Object.keys(listObjectsProp).map((order, idx) => {
-                return listElement(idx, order);
-              })}
+          {Object.keys(listObjectsProp).map((order, idx) => {
+            return listElement(idx, order);
+          })}
           {action.deleteFromExternal && (
             <span
               onClick={lClick}

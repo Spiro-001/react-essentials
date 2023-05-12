@@ -202,19 +202,7 @@ export const Demo = () => {
                   borderRadius: "6px",
                   backgroundColor: "white",
                 }}
-              >
-                {Object.keys(listObjects).map((listItem) => {
-                  return (
-                    <div
-                      className="list-item"
-                      style={{ width: "200px" }}
-                      key={listItem}
-                    >
-                      {listObjects[parseInt(listItem)]}
-                    </div>
-                  );
-                })}
-              </BasicList>
+              />
               <div className="container" style={buttonContainerStyle}>
                 <BasicButton
                   onClick={handleClickB}
@@ -236,22 +224,32 @@ export const Demo = () => {
                 setListObjectsProp={aSetListObjects}
                 draggable={true}
                 defaultStyle={{
-                  padding: "24px 0",
+                  padding: "24px 0px",
                   borderRadius: "0px",
                   border: 0,
                   gap: "12px",
+                  height: "100%",
                 }}
                 styleNoItems={{
-                  padding: "0px",
-                  borderRadius: "0px",
+                  width: "200px",
+                  borderRadius: "6px",
                   backgroundColor: "white",
                 }}
                 listItemStyle={{
                   width: "200px",
+                  borderRadius: "6px",
                   backgroundColor: "white",
                 }}
                 ref={aListRef}
-              />
+              >
+                {Object.keys(aListObjects).map((listItem) => {
+                  return (
+                    <div key={listItem} className="custom-list-item">
+                      {aListObjects[parseInt(listItem)]}
+                    </div>
+                  );
+                })}
+              </AdvanceList>
               <div className="container" style={buttonContainerStyle}>
                 <BasicButton
                   onClick={aHandleClickB}

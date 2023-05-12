@@ -2,6 +2,7 @@ import gsap from "gsap";
 import Draggable from "gsap/Draggable";
 import $ from "jquery";
 import {
+  Children,
   forwardRef,
   MutableRefObject,
   useEffect,
@@ -135,7 +136,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           listLength.current -= 1;
         }
       }
-      console.log(listObjectsProp);
     }, [listObjectsProp, listStuck]);
 
     useLayoutEffect(() => {
@@ -185,16 +185,13 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     const handleItemDragStart = (event: PointerEvent) => {
       const { target } = event;
       let paddingOffsets = 0;
-      console.log(
-        dragCurrent.current.onDragStart,
-        Object.keys(itemRef.current).length
-      );
+
       if (
         ref &&
         typeof ref !== "function" &&
-        (target as HTMLElement).children.length === 0 &&
         !dragCurrent.current.onDragStart &&
-        Object.keys(itemRef.current).length <= 1
+        Object.keys(itemRef.current).length <= 1 &&
+        Object.values(aListRef.current).includes(target as HTMLElement)
       ) {
         dragCurrent.current.onDragStart = true;
         paddingOffsets =
@@ -243,7 +240,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         });
 
         listItemRef.current.push(itemRef.current);
-        console.log(listItemRef.current);
       }
     };
 
@@ -292,17 +288,11 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       event.stopPropagation();
       event.preventDefault();
       const { target } = event;
-      console.log(
-        Object.keys(itemRef.current).length,
-        dragCurrent.current.onDragEnd,
-        listItemRef.current.length
-      );
       if (
         !dragCurrent.current.onDragEnd &&
         Object.keys(itemRef.current).length !== 0 &&
         listItemRef.current.length !== 0
       ) {
-        console.log(listItemRef.current);
         dragCurrent.current.onDragEnd = true;
         gsap.fromTo(
           itemRef.current.node,
@@ -362,7 +352,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
             aListRef.current[order] = ref;
           }}
         >
-          {listObjectsProp[parseInt(order)]}
+          {children && Children.toArray(children)[idx]}
+          {!children && listObjectsProp[parseInt(order)]}
         </span>
       );
     };
@@ -371,11 +362,9 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       return (
         <>
           <div style={defaultStyle} className="advance-list" ref={ref}>
-            {children
-              ? children
-              : Object.keys(listObjectsProp).map((order, idx) => {
-                  return listElement(idx, order);
-                })}
+            {Object.keys(listObjectsProp).map((order, idx) => {
+              return listElement(idx, order);
+            })}
             {action.deleteFromExternal && (
               <span
                 // onClick={lClick}
@@ -405,8 +394,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       );
     }
     return (
-      <div style={styleNoItems} className="advance-list">
-        <span className="a-list-item" ref={noListRef}>
+      <div style={defaultStyle} className="advance-list">
+        <span className="a-list-item" ref={noListRef} style={styleNoItems}>
           {ifEmpty}
         </span>
       </div>
