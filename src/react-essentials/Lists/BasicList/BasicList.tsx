@@ -56,6 +56,7 @@ export const BasicList = ({
       Object.keys(listObjectsProp)[Object.keys(listObjectsProp).length - 1]
     )
   );
+  const nDex = useRef<number>(1);
 
   const lClick = async (element: React.MouseEvent<HTMLSpanElement>) => {
     if (!action.delete) {
@@ -139,19 +140,19 @@ export const BasicList = ({
   }, [setListObjectsProp ? listObjectsProp : listObjects]);
 
   const listElement = (idx: number, order: string) => {
+    nDex.current++;
     return (
       <span
         onClick={lClick}
         style={listItemStyle}
         className="list-item"
-        key={idx}
+        key={idx + "blist" + listObjectsProp[parseInt(order)] + nDex.current}
         id={order}
         ref={(ref) => {
           bListRef.current[order] = ref;
         }}
       >
-        {children && Children.toArray(children)[idx]}
-        {!children && listObjectsProp[parseInt(order)]}
+        {listObjectsProp[parseInt(order)]}
       </span>
     );
   };
@@ -170,6 +171,21 @@ export const BasicList = ({
         >
           {Object.keys(listObjectsProp).map((order, idx) => {
             return listElement(idx, order);
+          })}
+          {Children.map(children, (child, idx) => {
+            return (
+              <span
+                style={listItemStyle}
+                className="list-item"
+                key={nDex.current + "blist"}
+                id={nDex.current.toString()}
+                ref={(ref) => {
+                  bListRef.current[nDex.current] = ref;
+                }}
+              >
+                {child}
+              </span>
+            );
           })}
           {action.deleteFromExternal && (
             <span

@@ -168,7 +168,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
               type: "x,y",
               bounds: {
                 minY: minY - 12,
-                maxY: maxY - paddingOffsets,
+                maxY: maxY - (paddingOffsets - 12),
                 minX: 0,
                 maxX: maxX - clientWidth,
               },
@@ -183,9 +183,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     }, [listObjectsProp, listStuck]);
 
     const handleItemDragStart = (event: PointerEvent) => {
-      const { target } = event;
+      let { target } = event;
       let paddingOffsets = 0;
-
       if (
         ref &&
         typeof ref !== "function" &&
@@ -238,7 +237,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
             });
           }
         });
-
         listItemRef.current.push(itemRef.current);
       }
     };
@@ -358,7 +356,10 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       );
     };
 
-    if (Object.keys(listObjectsProp).length !== 0 || children) {
+    if (
+      Object.keys(listObjectsProp).length !== 0 ||
+      Children.count(children) !== 0
+    ) {
       return (
         <>
           <div style={defaultStyle} className="advance-list" ref={ref}>

@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useRef } from "react";
 import "./BasicButton.css";
 
 type BasicButtonProps = {
@@ -17,10 +17,11 @@ export const BasicButton = ({
   noAnim = false,
   children,
 }: BasicButtonProps) => {
+  const buttonRef = useRef<HTMLDivElement>(null);
   const bClick = (element: MouseEvent<HTMLDivElement>) => {
     if (!noAnim) {
       const bTimeLine = gsap.timeline();
-      bTimeLine.to(element.target, {
+      bTimeLine.to(buttonRef.current, {
         keyframes: [
           {
             translateY: 1,
@@ -39,7 +40,12 @@ export const BasicButton = ({
   };
 
   return (
-    <div style={bStyle} onClick={bClick} className="basic-button">
+    <div
+      style={bStyle}
+      onClick={bClick}
+      className="basic-button"
+      ref={buttonRef}
+    >
       {value ? value : children}
     </div>
   );

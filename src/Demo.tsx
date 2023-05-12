@@ -13,6 +13,7 @@ import gsap from "gsap";
 
 export const Demo = () => {
   const aButtonRef = useRef<HTMLDivElement>(null);
+  const bButtonRef = useRef<HTMLDivElement>(null);
   const demoRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
   const aListRef = useRef<HTMLDivElement>(null);
@@ -156,7 +157,7 @@ export const Demo = () => {
 
   var containerStyle: React.CSSProperties = {
     gap: 0,
-    height: "500px",
+    height: "fit-content",
     justifyContent: "space-between",
     alignItems: "space-between",
     border: "1px solid red",
@@ -228,7 +229,7 @@ export const Demo = () => {
                   borderRadius: "0px",
                   border: 0,
                   gap: "12px",
-                  height: "100%",
+                  height: "fit-content",
                 }}
                 styleNoItems={{
                   width: "200px",
@@ -259,7 +260,7 @@ export const Demo = () => {
                 <AdvanceButton
                   onClick={aHandleClickA}
                   value="Delete last item from list"
-                  ref={aButtonRef}
+                  ref={bButtonRef}
                 />
               </div>
             </div>
