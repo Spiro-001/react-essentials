@@ -4,7 +4,6 @@ import $ from "jquery";
 import {
   Children,
   forwardRef,
-  MutableRefObject,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -34,13 +33,10 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       defaultStyle = {
         minWidth: "200px",
       },
-      styleNoItems = {
-        minHeight: "300px",
-        minWidth: "200px",
-      },
       listItemStyle = {
         backgroundColor: "white",
       },
+      styleNoItems = listItemStyle,
       aSetting = {
         opacity: 0,
         height: 0,
@@ -81,6 +77,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       onDragEnd: false,
     });
     const lastItemRef = useRef<HTMLElement | null>(null);
+    const clickedItemRef = useRef<HTMLElement | null>(null);
 
     const lClick = (element?: React.MouseEvent<HTMLSpanElement>) => {
       listClick(element);
@@ -177,6 +174,10 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
               onDragStart: (event) => handleItemDragStart(event),
               onDrag: (event) => handleItemDrag(event),
               onDragEnd: (event) => handleItemDrop(event),
+              onPress: (event) => {
+                const { target } = event;
+                clickedItemRef.current = target as HTMLElement;
+              },
             });
             minY -= (aListRef.current[listElementKey]?.clientHeight ?? 0) + 12;
           }
@@ -186,6 +187,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
 
     const handleItemDragStart = (event: PointerEvent) => {
       let { target } = event;
+      console.log(target);
       let paddingOffsets = 0;
       if (
         ref &&
@@ -200,6 +202,10 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
             target = aListRef.current[aListKey];
           }
         });
+        if (ref.current === target) {
+          target = clickedItemRef.current;
+          console.log(1);
+        }
         dragCurrent.current.onDragStart = true;
         paddingOffsets =
           (($(ref.current as HTMLDivElement).innerHeight() ?? 0) -

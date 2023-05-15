@@ -167,18 +167,18 @@ export const ButtonsDemo = () => {
       <div className="background-b">
         <SideNav
           options={{
-            1: "Basic Button",
-            2: "Advanced Button",
+            demo1: "Basic Button",
+            demo2: "Advanced Button",
           }}
         />
         <div className="demo-holder">
-          <div className="demo" id="1">
+          <div className="demo" id="demo1">
             {bDemo()}
             <div className="documentation">
               <Table headers={tableHeadersA} body={tableBodyA} />
             </div>
           </div>
-          <div className="demo" id="2">
+          <div className="demo" id="demo2">
             {aDemo()}
             <div className="documentation">
               <Table headers={tableHeadersB} body={tableBodyB} />

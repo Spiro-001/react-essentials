@@ -153,18 +153,18 @@ export const InputDemo = () => {
       <div className="background-b">
         <SideNav
           options={{
-            1: "Basic Input",
-            2: "Advanced Input",
+            demo1: "Basic Input",
+            demo2: "Advanced Input",
           }}
         />
         <div className="demo-holder">
-          <div className="demo" id="1">
+          <div className="demo" id="demo1">
             {bInput()}
             <div className="documentation">
               <Table headers={tableHeadersA} body={tableBodyA} />
             </div>
           </div>
-          <div className="demo" id="2">
+          <div className="demo" id="demo2">
             {aInput()}
             <div className="documentation">
               <Table headers={tableHeadersA} body={tableBodyB} />

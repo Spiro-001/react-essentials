@@ -13,9 +13,10 @@
   transition-duration: 0.2s;
   box-sizing: border-box;
   user-select: none;
+  cursor: pointer;
 }
 
-.advance-button:hover {
+/* .advance-button:hover {
   cursor: pointer;
-  filter: brightness(0.8);
-}
+  filter: brightness(0.9);
+} */

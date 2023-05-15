@@ -8,7 +8,7 @@ type BasicListProp = {
   styleNoItems?: React.CSSProperties;
   listItemStyle?: React.CSSProperties;
   aSetting?: Record<string, string | number>;
-  onClick(): void;
+  onClick?(): void;
   ifEmpty?: any;
   listObjectsProp?: Record<number, string>;
   setListObjectsProp?: React.Dispatch<
@@ -22,18 +22,17 @@ export const BasicList = ({
     minHeight: "300px",
     minWidth: "200px",
   },
-  styleNoItems = {
-    minHeight: "300px",
-    minWidth: "200px",
+  listItemStyle = {
+    backgroundColor: "white",
   },
-  listItemStyle = {},
+  styleNoItems = listItemStyle,
   aSetting = {
     opacity: 0,
     height: 0,
     padding: "0px 24px",
     duration: 0.3,
   },
-  onClick,
+  onClick = () => {},
   listObjectsProp = {},
   setListObjectsProp,
   ifEmpty = "This list is empty.",
@@ -63,6 +62,7 @@ export const BasicList = ({
         gsap.to(element.target, {
           ...aSetting,
           onComplete: () => {
+            onClick();
             UseDeleteListItem(
               element,
               listObjectsProp,
@@ -172,6 +172,7 @@ export const BasicList = ({
           {action.deleteFromExternal && (
             <span
               onClick={lClick}
+              style={listItemStyle}
               className="list-item"
               key={"deadNode"}
               id={"deadNode"}
