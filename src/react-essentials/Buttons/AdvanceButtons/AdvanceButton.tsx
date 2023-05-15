@@ -4,7 +4,7 @@ import "./AdvanceButton.css";
 
 type AdvanceButtonProps = {
   bStyle?: React.CSSProperties;
-  onClick(): void;
+  onClick(element: MouseEvent<HTMLDivElement>): void;
   value?: string;
   anim?: GSAPTweenVars;
   children?: React.ReactNode;
@@ -32,7 +32,7 @@ export const AdvanceButton = forwardRef<HTMLDivElement, AdvanceButtonProps>(
         const buttonTimeline = gsap.timeline();
         buttonTimeline.to(ref.current, anim);
       }
-      onClick();
+      onClick(element);
     };
 
     return (

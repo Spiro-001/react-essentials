@@ -187,7 +187,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
 
     const handleItemDragStart = (event: PointerEvent) => {
       let { target } = event;
-      console.log(target);
       let paddingOffsets = 0;
       if (
         ref &&

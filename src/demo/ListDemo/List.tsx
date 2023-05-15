@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import gsap from "gsap";
+import { MouseEvent, useRef, useState } from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
 import { AdvanceButton } from "../../react-essentials/Buttons/AdvanceButtons/AdvanceButton";
 import { BasicButton } from "../../react-essentials/Buttons/SimpleButtons/BasicButton";
@@ -50,18 +51,31 @@ export const ListDemo = () => {
     borderRadius: "8px",
   };
 
-  const handleClickA = () => {
-    if (Object.keys(listObjects).length)
+  const handleClickA = (event: MouseEvent) => {
+    if (Object.keys(listObjects).length) {
       setListObjects((prevList) => {
         const copyList = structuredClone(prevList);
         let lastKey: any = Object.keys(copyList).pop();
         delete copyList[lastKey];
         return copyList;
       });
+    } else {
+      gsap.fromTo(
+        event.currentTarget,
+        {
+          x: 10,
+        },
+        {
+          x: 0,
+          ease: "elastic.out(1, 0.1)",
+          duration: 1,
+        }
+      );
+    }
   };
 
-  const handleClickB = () => {
-    if (input) {
+  const handleClickB = (event: MouseEvent) => {
+    if (input && Object.keys(listObjects).length < 5) {
       setListObjects((prevList) => {
         const copyList = structuredClone(prevList);
         let lastKey = parseInt(
@@ -71,21 +85,46 @@ export const ListDemo = () => {
         setInput("");
         return copyList;
       });
+    } else {
+      gsap.fromTo(
+        event.currentTarget,
+        {
+          x: 10,
+        },
+        {
+          x: 0,
+          ease: "elastic.out(1, 0.1)",
+          duration: 1,
+        }
+      );
     }
   };
 
-  const aHandleClickA = () => {
-    if (Object.keys(aListObjects).length)
+  const aHandleClickA = (event: MouseEvent) => {
+    if (Object.keys(aListObjects).length) {
       aSetListObjects((prevList) => {
         const copyList = structuredClone(prevList);
         let lastKey: any = Object.keys(copyList).pop();
         delete copyList[lastKey];
         return copyList;
       });
+    } else {
+      gsap.fromTo(
+        event.currentTarget,
+        {
+          x: 10,
+        },
+        {
+          x: 0,
+          ease: "elastic.out(1, 0.1)",
+          duration: 1,
+        }
+      );
+    }
   };
 
-  const aHandleClickB = () => {
-    if (cInput) {
+  const aHandleClickB = (event: MouseEvent) => {
+    if (cInput && Object.keys(listObjects).length < 5) {
       aSetListObjects((prevList) => {
         const copyList = structuredClone(prevList);
         let lastKey = parseInt(
@@ -95,6 +134,18 @@ export const ListDemo = () => {
         cSetInput("");
         return copyList;
       });
+    } else {
+      gsap.fromTo(
+        event.currentTarget,
+        {
+          x: 10,
+        },
+        {
+          x: 0,
+          ease: "elastic.out(1, 0.1)",
+          duration: 1,
+        }
+      );
     }
   };
 
@@ -275,7 +326,10 @@ export const ListDemo = () => {
 
   const bInput = () => {
     return (
-      <div className="container-demo bwgap">
+      <div
+        className="container-demo bwgap"
+        style={{ alignItems: "flex-start" }}
+      >
         <div className="container-demo code">
           <CodeBlock
             text={codeSnippetBL}
@@ -289,7 +343,14 @@ export const ListDemo = () => {
             }}
           />
         </div>
-        <div className="container-demo inner" style={{ gap: "0px 12px" }}>
+        <div
+          className="container-demo inner"
+          style={{
+            gap: "0px 12px",
+            minHeight: "500px",
+            alignItems: "flex-end",
+          }}
+        >
           <div className="container" style={containerStyle}>
             <BasicList
               onClick={() => {}}
@@ -314,7 +375,7 @@ export const ListDemo = () => {
           </div>
           <div className="container" style={buttonContainerStyle}>
             <BasicButton
-              onClick={handleClickB}
+              onClick={(event) => handleClickB(event)}
               value="Add new item to list"
               bStyle={{
                 width: "100%",
@@ -332,7 +393,7 @@ export const ListDemo = () => {
                 boxShadow:
                   "0px 2px 2px rgba(221, 170, 88, 0.8), 0px 3px 2px rgba(202, 143, 50, 0.8)",
               }}
-              onClick={handleClickA}
+              onClick={(event) => handleClickA(event)}
               value="Delete last item from list"
               ref={aButtonRef}
             />
@@ -353,7 +414,10 @@ export const ListDemo = () => {
 
   const aInput = () => {
     return (
-      <div className="container-demo bwgap">
+      <div
+        className="container-demo bwgap"
+        style={{ alignItems: "flex-start" }}
+      >
         <div className="container-demo code">
           <CodeBlock
             text={codeSnippetAL}
@@ -407,7 +471,7 @@ export const ListDemo = () => {
           </div>
           <div className="container" style={buttonContainerStyle}>
             <BasicButton
-              onClick={aHandleClickB}
+              onClick={(event) => aHandleClickB(event)}
               value="Add new item to list"
               bStyle={{
                 width: "100%",
@@ -418,7 +482,7 @@ export const ListDemo = () => {
               }}
             />
             <AdvanceButton
-              onClick={aHandleClickA}
+              onClick={(event) => aHandleClickA(event)}
               value="Delete last item from list"
               ref={bButtonRef}
               bStyle={{
