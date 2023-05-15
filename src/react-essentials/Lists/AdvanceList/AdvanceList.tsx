@@ -65,9 +65,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       new: false,
       deleteFromExternal: false,
     });
-    const [listStuck, setListStuck] = useState<number>(0);
 
-    const aListRef = useRef<Record<string, HTMLSpanElement | null>>({});
+    const aListRef = useRef<Record<string, HTMLSpanElement>>({});
     const noListRef = useRef<HTMLDivElement | null>(null);
     const listLength = useRef<number>(
       parseInt(
@@ -81,7 +80,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       onDrag: false,
       onDragEnd: false,
     });
-    const gsapAnimRunning = useRef<boolean>(false);
+    const lastItemRef = useRef<HTMLElement | null>(null);
 
     const lClick = (element?: React.MouseEvent<HTMLSpanElement>) => {
       listClick(element);
@@ -96,7 +95,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
         }
       }
 
-      const bListKeys = Object.keys(aListRef.current);
+      const bListKeys = Object.keys(listObjectsProp);
       const lastIndex = bListKeys?.pop();
       const newObjectListLength = Object.keys(listObjectsProp).length;
 
@@ -115,6 +114,8 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       }
 
       if (aListRef.current[lastIndex ? parseInt(lastIndex) : 1]) {
+        lastItemRef.current =
+          aListRef.current[lastIndex ? parseInt(lastIndex) : 1];
         const newItemFadeIn = gsap
           .to(aListRef.current[lastIndex ? parseInt(lastIndex) : 1], {
             opacity: 0,
@@ -136,7 +137,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           listLength.current -= 1;
         }
       }
-    }, [listObjectsProp, listStuck]);
+    }, [listObjectsProp]);
 
     useLayoutEffect(() => {
       gsap.registerPlugin(Draggable);
@@ -169,9 +170,10 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
               bounds: {
                 minY: minY - 12,
                 maxY: maxY - (paddingOffsets - 12),
-                minX: 0,
-                maxX: maxX - clientWidth,
+                minX: -1,
+                maxX: maxX - clientWidth + 1,
               },
+              minimumMovement: 0,
               onDragStart: (event) => handleItemDragStart(event),
               onDrag: (event) => handleItemDrag(event),
               onDragEnd: (event) => handleItemDrop(event),
@@ -180,7 +182,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           }
         });
       }
-    }, [listObjectsProp, listStuck]);
+    }, [listObjectsProp]);
 
     const handleItemDragStart = (event: PointerEvent) => {
       let { target } = event;
@@ -188,10 +190,16 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
       if (
         ref &&
         typeof ref !== "function" &&
+        ref.current &&
         !dragCurrent.current.onDragStart &&
         Object.keys(itemRef.current).length <= 1 &&
-        Object.values(aListRef.current).includes(target as HTMLElement)
+        ref.current.contains(target as HTMLElement)
       ) {
+        Object.keys(aListRef.current).forEach((aListKey) => {
+          if (aListRef.current[aListKey].contains(target as HTMLElement)) {
+            target = aListRef.current[aListKey];
+          }
+        });
         dragCurrent.current.onDragStart = true;
         paddingOffsets =
           (($(ref.current as HTMLDivElement).innerHeight() ?? 0) -
@@ -220,8 +228,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
             duration: 0.3,
           }
         );
-
-        Object.keys(aListRef.current).forEach((node) => {
+        Object.keys(listObjectsProp).forEach((node) => {
           let itemNode = aListRef.current[node];
           if (itemNode !== itemRef.current.node && itemNode) {
             Draggable.get(itemNode).disable();
@@ -333,6 +340,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
               });
               return copyList;
             });
+            aListRef.current = {};
             listItemRef.current = [];
             itemRef.current = {};
           });
@@ -347,7 +355,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           key={idx}
           id={order}
           ref={(ref) => {
-            aListRef.current[order] = ref;
+            if (ref) aListRef.current[order] = ref;
           }}
         >
           {children && Children.toArray(children)[idx]}
@@ -368,24 +376,30 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
             })}
             {action.deleteFromExternal && (
               <span
-                // onClick={lClick}
+                onClick={lClick}
                 style={listItemStyle}
                 className="a-list-item"
                 key={"deadNode"}
                 id={"deadNode"}
                 ref={(deletedNodeRef) => {
                   if (deletedNodeRef) {
-                    const removeItemFadeIn = gsap.to(deletedNodeRef, {
-                      opacity: 0,
-                      height: 0,
-                      padding: "0px 24px",
-                      duration: 0.3,
-                      onComplete: () => {
-                        setAction((prevAction) => {
-                          return { ...prevAction, deleteFromExternal: false };
-                        });
+                    const removeItemFadeIn = gsap.fromTo(
+                      deletedNodeRef,
+                      {
+                        height: lastItemRef.current?.clientHeight,
                       },
-                    });
+                      {
+                        opacity: 0,
+                        height: 0,
+                        padding: "0px 24px",
+                        duration: 0.3,
+                        onComplete: () => {
+                          setAction((prevAction) => {
+                            return { ...prevAction, deleteFromExternal: false };
+                          });
+                        },
+                      }
+                    );
                   }
                 }}
               ></span>

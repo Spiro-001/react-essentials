@@ -26,10 +26,10 @@ export const Demo = () => {
   });
 
   const [aListObjects, aSetListObjects] = useState<Record<number, string>>({
-    1: "bob",
-    2: "charles",
-    3: "doggy",
-    4: "mark",
+    1: "James Laur",
+    2: "Malcolm Sultz",
+    3: "Ricky White",
+    4: "Mark Hale",
   });
 
   const [locked, setLocked] = useState<boolean>(false);
@@ -163,8 +163,10 @@ export const Demo = () => {
     border: "1px solid red",
     borderRadius: "8px",
     overflow: "hidden",
-    padding: "12px 0px",
+    padding: "12px 12px",
     backgroundColor: "white",
+    width: "fit-content",
+    boxSizing: "border-box",
   };
   var buttonContainerStyle: React.CSSProperties = {
     backgroundColor: "white",
@@ -232,12 +234,13 @@ export const Demo = () => {
                   height: "fit-content",
                 }}
                 styleNoItems={{
-                  width: "200px",
+                  minWidth: "200px",
                   borderRadius: "6px",
                   backgroundColor: "white",
                 }}
                 listItemStyle={{
-                  width: "200px",
+                  minWidth: "200px",
+                  padding: "12px 24px 12px 12px",
                   borderRadius: "6px",
                   backgroundColor: "white",
                 }}
@@ -246,6 +249,11 @@ export const Demo = () => {
                 {Object.keys(aListObjects).map((listItem) => {
                   return (
                     <div key={listItem} className="custom-list-item">
+                      <img
+                        src={`https://picsum.photos/200/300`}
+                        alt="lorem"
+                        className="test-image"
+                      />
                       {aListObjects[parseInt(listItem)]}
                     </div>
                   );

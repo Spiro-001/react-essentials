@@ -8,7 +8,6 @@ export const SideNav = ({ options = {} }: SideNavProps) => {
   const handleScrollTo = (key: string) => {
     const element = document.getElementById(key);
     let scrollTo = element?.getBoundingClientRect().top;
-    console.log(scrollTo);
     if (!scrollTo) scrollTo = 0;
     if (scrollTo >= 116 || scrollTo <= 0) {
       if (key === "1") window.scrollTo({ top: 0 });
