@@ -10,8 +10,8 @@ type BasicListProp = {
   aSetting?: Record<string, string | number>;
   onClick?(): void;
   ifEmpty?: any;
-  listObjectsProp?: Record<number, string>;
-  setListObjectsProp?: React.Dispatch<
+  listObjectsProp: Record<number, string>;
+  setListObjectsProp: React.Dispatch<
     React.SetStateAction<Record<number, string>>
   >;
   children?: React.ReactNode;
@@ -29,6 +29,8 @@ export const BasicList = ({
   aSetting = {
     opacity: 0,
     height: 0,
+    margin: 0,
+    gap: 0,
     padding: "0px 24px",
     duration: 0.3,
   },
@@ -38,8 +40,6 @@ export const BasicList = ({
   ifEmpty = "This list is empty.",
   children,
 }: BasicListProp) => {
-  const [listObjects, setListObjects] =
-    useState<Record<number, string>>(listObjectsProp);
   const [gsapTimeLine, setGsapTimeline] = useState<GSAPTween | null>(null);
   const [action, setAction] = useState<Record<string, boolean>>({
     delete: false,
@@ -63,11 +63,7 @@ export const BasicList = ({
           ...aSetting,
           onComplete: () => {
             onClick();
-            UseDeleteListItem(
-              element,
-              listObjectsProp,
-              setListObjectsProp ? setListObjectsProp : setListObjects
-            );
+            UseDeleteListItem(element, listObjectsProp, setListObjectsProp);
             setAction((prevAction) => {
               return {
                 ...prevAction,
@@ -95,16 +91,11 @@ export const BasicList = ({
 
     const bListKeys = Object.keys(bListRef.current);
     const lastIndex = bListKeys?.pop();
-    const newObjectListLength = Object.keys(
-      setListObjectsProp ? listObjectsProp : listObjects
-    ).length;
+    const newObjectListLength = Object.keys(listObjectsProp).length;
 
     if (noListRef.current) {
       const noItemFadeIn = gsap.to(noListRef.current, {
-        opacity: 0,
-        height: 0,
-        padding: "0px 24px",
-        duration: 0.3,
+        ...aSetting,
       });
 
       if (newObjectListLength === 0) {
@@ -116,10 +107,7 @@ export const BasicList = ({
     if (bListRef.current[lastIndex ? parseInt(lastIndex) : 1]) {
       const newItemFadeIn = gsap
         .to(bListRef.current[lastIndex ? parseInt(lastIndex) : 1], {
-          opacity: 0,
-          height: 0,
-          padding: "0px 24px",
-          duration: 0.3,
+          ...aSetting,
         })
         .pause();
       if (listLength.current < newObjectListLength) {
@@ -134,7 +122,7 @@ export const BasicList = ({
         listLength.current -= 1;
       }
     }
-  }, [setListObjectsProp ? listObjectsProp : listObjects]);
+  }, [listObjectsProp]);
 
   const listElement = (idx: number, order: string) => {
     return (
@@ -179,10 +167,7 @@ export const BasicList = ({
               ref={(deletedNodeRef) => {
                 if (deletedNodeRef) {
                   const removeItemFadeIn = gsap.to(deletedNodeRef, {
-                    opacity: 0,
-                    height: 0,
-                    padding: "0px 24px",
-                    duration: 0.3,
+                    ...aSetting,
                     onComplete: () => {
                       setAction((prevAction) => {
                         return { ...prevAction, deleteFromExternal: false };

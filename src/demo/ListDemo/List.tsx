@@ -246,8 +246,38 @@ export const ListDemo = () => {
   `;
 
   const codeSnippetAL = `
-  const handleInputClick = (event: MouseEvent) => {};
-  const [inputValueA, setInputValueA] = useState<string>("");
+  const aButtonRef = useRef<HTMLDivElement>(null);
+  const [aListObjects, aSetListObjects] = useState<Record<number, string>>({
+    1: "Doug",
+    2: "Charles",
+    3: "Ryan",
+    4: "Mark",
+  });
+  const [cInput, cSetInput] = useState<string | null>("");
+
+  const aHandleClickA = () => {
+    if (Object.keys(listObjects).length)
+      setListObjects((prevList) => {
+        const copyList = structuredClone(prevList);
+        let lastKey: any = Object.keys(copyList).pop();
+        delete copyList[lastKey];
+        return copyList;
+      });
+  };
+
+  const aHandleClickB = () => {
+    if (cInput) {
+      setListObjects((prevList) => {
+        const copyList = structuredClone(prevList);
+        let lastKey = parseInt(
+          Object.keys(copyList)[Object.keys(copyList).length - 1]
+        );
+        copyList[lastKey ? lastKey + 1 : 1] = cInput;
+        setInput("");
+        return copyList;
+      });
+    }
+  };
 
   return (
     <div className="container" style={containerStyle}>
@@ -347,7 +377,7 @@ export const ListDemo = () => {
           className="container-demo inner"
           style={{
             gap: "0px 12px",
-            minHeight: "500px",
+            minHeight: "600px",
             alignItems: "flex-end",
           }}
         >
@@ -359,8 +389,8 @@ export const ListDemo = () => {
               defaultStyle={{
                 padding: "24px 0px",
                 borderRadius: "0px",
+                minHeight: "400px",
                 border: 0,
-                gap: "12px",
                 backgroundColor: "inherit",
               }}
               listItemStyle={{
@@ -370,6 +400,7 @@ export const ListDemo = () => {
                   "0px 2px 2px rgba(154, 220, 200, 0.8), 0px 3px 2px rgba(113, 188, 166, 0.8)",
                 borderRadius: "6px",
                 backgroundColor: "white",
+                margin: "0px 0px 12px 0px",
               }}
             />
           </div>
@@ -431,7 +462,14 @@ export const ListDemo = () => {
             }}
           />
         </div>
-        <div className="container-demo inner" style={{ gap: "0px 12px" }}>
+        <div
+          className="container-demo inner"
+          style={{
+            gap: "0px 12px",
+            minHeight: "600px",
+            alignItems: "flex-end",
+          }}
+        >
           <div className="container" style={containerStyle}>
             <AdvanceList
               onClick={() => {}}
@@ -444,7 +482,7 @@ export const ListDemo = () => {
                 borderRadius: "0px",
                 border: 0,
                 gap: "12px",
-                height: "fit-content",
+                minHeight: "450px",
               }}
               listItemStyle={{
                 minWidth: "200px",
@@ -456,10 +494,11 @@ export const ListDemo = () => {
               ref={aListRef}
             >
               {Object.keys(aListObjects).map((listItem) => {
+                console.log(aListObjects);
                 return (
                   <div key={listItem} className="custom-list-item">
                     <img
-                      src={`https://picsum.photos/200/300`}
+                      src={`https://picsum.photos/seed/${1}/300/300`}
                       alt="lorem"
                       className="test-image"
                     />

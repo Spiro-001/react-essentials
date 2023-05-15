@@ -53,8 +53,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
     }: AdvanceListProp,
     ref
   ) {
-    const [listObjects, setListObjects] =
-      useState<Record<number, string>>(listObjectsProp);
     const [gsapTimeLine, setGsapTimeline] = useState<GSAPTween | null>(null);
     const [action, setAction] = useState<Record<string, boolean>>({
       delete: false,
@@ -154,6 +152,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           if (aListRef.current[listElementKey]) {
             clientWidth = aListRef.current[listElementKey]?.clientWidth ?? 0;
             maxY -= aListRef.current[listElementKey]?.clientHeight ?? 0;
+            gsap.set(aListRef.current[listElementKey], { clearProps: "top" });
             gsap.fromTo(
               aListRef.current[listElementKey],
               { y: 0, x: 0 },
@@ -171,6 +170,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
                 maxX: maxX - clientWidth + 1,
               },
               minimumMovement: 0,
+              zIndexBoost: false,
               onDragStart: (event) => handleItemDragStart(event),
               onDrag: (event) => handleItemDrag(event),
               onDragEnd: (event) => handleItemDrop(event),
@@ -313,6 +313,7 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
           {
             scale: 1,
             boxShadow: "0px 0px 0px rgba(0,0,0,0.1)",
+            duration: 0.3,
           }
         );
         gsap
@@ -330,18 +331,12 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
             itemRef.current.savePoint = itemRef.current.initialPosition;
             var newList: Record<number | string, any> = {};
             listItemRef.current.forEach((item) => {
-              gsap.set(item.node, { clearProps: "top" });
               newList[item.order] = parseInt(item.node.id);
             });
             setListObjectsProp((prevList) => {
               var copyList: Record<number | string, any> = {};
               Object.keys(newList).forEach((newListKey) => {
                 copyList[newListKey] = prevList[newList[newListKey]];
-                if (aListRef.current[newListKey]) {
-                  gsap.set(aListRef.current[newListKey], {
-                    clearProps: "top",
-                  });
-                }
               });
               return copyList;
             });
