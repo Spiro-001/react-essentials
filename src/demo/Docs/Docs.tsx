@@ -48,7 +48,7 @@ export const Docs = () => {
       y: 0,
       duration: 0,
       onComplete: () => {
-        history.push(`/${key.toLowerCase()}`);
+        history.push(`/docs/${key.toLowerCase()}`);
       },
     });
     componentSwitchTimeline.play();

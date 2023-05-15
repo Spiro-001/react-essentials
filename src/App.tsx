@@ -4,7 +4,8 @@ import { Demo } from "./Demo";
 import { ButtonsDemo } from "./demo/ButtonDemo/ButtonDemo";
 import { Docs } from "./demo/Docs/Docs";
 import { Home } from "./demo/Home/Home";
-import { Input } from "./demo/InputDemo/Input";
+import { InputDemo } from "./demo/InputDemo/Input";
+import { ListDemo } from "./demo/ListDemo/List";
 
 function App() {
   return (
@@ -14,14 +15,17 @@ function App() {
           <Route exact path={"/"}>
             <Home />
           </Route>
-          <Route exact path={"/buttons"}>
-            <ButtonsDemo />
-          </Route>
-          <Route exact path={"/inputs"}>
-            <Input />
-          </Route>
           <Route exact path={"/demo"}>
             <Demo />
+          </Route>
+          <Route exact path={"/docs/buttons"}>
+            <ButtonsDemo />
+          </Route>
+          <Route exact path={"/docs/inputs"}>
+            <InputDemo />
+          </Route>
+          <Route exact path={"/docs/lists"}>
+            <ListDemo />
           </Route>
           <Route exact path={"/docs"}>
             <Docs />

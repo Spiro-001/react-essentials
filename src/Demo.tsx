@@ -160,7 +160,6 @@ export const Demo = () => {
     height: "fit-content",
     justifyContent: "space-between",
     alignItems: "space-between",
-    border: "1px solid red",
     borderRadius: "8px",
     overflow: "hidden",
     padding: "12px 12px",
@@ -168,6 +167,7 @@ export const Demo = () => {
     width: "fit-content",
     boxSizing: "border-box",
   };
+
   var buttonContainerStyle: React.CSSProperties = {
     backgroundColor: "white",
     height: "fit-content",
@@ -275,7 +275,11 @@ export const Demo = () => {
 
             <BasicInputs
               listStates={[input, setInput]}
-              bStyle={{ padding: "12px 24px 12px 6px" }}
+              bStyle={{
+                padding: "12px 24px 12px 12px",
+                borderRadius: "8px",
+                border: "1px solid black",
+              }}
               placeholder="Add to this list..."
             />
           </>

@@ -8,7 +8,7 @@ import { tableBodyA, tableBodyB, tableHeadersA } from "./TableInfo";
 import { AdvanceInputs } from "../../react-essentials/Inputs/AdvancedInput/AdvanceInput";
 import { SideNav } from "../Nav/SideNav";
 
-export const Input = () => {
+export const InputDemo = () => {
   const codeSnippetBL = `
   const inputStyle = {
     padding: "6px 12px 6px 6px",
