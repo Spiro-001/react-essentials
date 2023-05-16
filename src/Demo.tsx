@@ -10,6 +10,7 @@ import { Nav } from "./demo/Nav/Nav";
 import { AdvanceList } from "./react-essentials/Lists/AdvanceList/AdvanceList";
 import Fox from "./fox.webp";
 import gsap from "gsap";
+import { BasicToggle } from "./react-essentials/Toggles/BasicToggle/BasicToggle";
 
 export const Demo = () => {
   const aButtonRef = useRef<HTMLDivElement>(null);
@@ -32,7 +33,7 @@ export const Demo = () => {
     4: "Mark Hale",
   });
 
-  const [locked, setLocked] = useState<boolean>(true);
+  const [locked, setLocked] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [input, setInput] = useState<string | null>("");
 
@@ -107,74 +108,7 @@ export const Demo = () => {
     }
   };
 
-  const handleClickA = () => {
-    if (Object.keys(listObjects).length)
-      setListObjects((prevList) => {
-        const copyList = structuredClone(prevList);
-        let lastKey: any = Object.keys(copyList).pop();
-        delete copyList[lastKey];
-        return copyList;
-      });
-  };
-
-  const handleClickB = () => {
-    if (input) {
-      setListObjects((prevList) => {
-        const copyList = structuredClone(prevList);
-        let lastKey = parseInt(
-          Object.keys(copyList)[Object.keys(copyList).length - 1]
-        );
-        copyList[lastKey ? lastKey + 1 : 1] = input;
-        setInput("");
-        return copyList;
-      });
-    }
-  };
-
-  const aHandleClickA = () => {
-    if (Object.keys(aListObjects).length)
-      aSetListObjects((prevList) => {
-        const copyList = structuredClone(prevList);
-        let lastKey: any = Object.keys(copyList).pop();
-        delete copyList[lastKey];
-        return copyList;
-      });
-  };
-
-  const aHandleClickB = () => {
-    if (input) {
-      aSetListObjects((prevList) => {
-        const copyList = structuredClone(prevList);
-        let lastKey = parseInt(
-          Object.keys(copyList)[Object.keys(copyList).length - 1]
-        );
-        copyList[lastKey ? lastKey + 1 : 1] = input;
-        setInput("");
-        return copyList;
-      });
-    }
-  };
-
-  var containerStyle: React.CSSProperties = {
-    gap: 0,
-    height: "fit-content",
-    justifyContent: "space-between",
-    alignItems: "space-between",
-    borderRadius: "8px",
-    overflow: "hidden",
-    padding: "12px 12px",
-    backgroundColor: "white",
-    width: "fit-content",
-    boxSizing: "border-box",
-  };
-
-  var buttonContainerStyle: React.CSSProperties = {
-    backgroundColor: "white",
-    height: "fit-content",
-    width: "100%",
-    padding: "12px",
-    boxSizing: "border-box",
-  };
+  const [toggleState, setToggleState] = useState<boolean>(true);
 
   return (
     <>
@@ -183,104 +117,9 @@ export const Demo = () => {
         {locked && lockedDemo()}
         {!locked && (
           <>
-            <div className="container" style={containerStyle}>
-              <BasicList
-                onClick={() => {}}
-                listObjectsProp={listObjects}
-                setListObjectsProp={setListObjects}
-                defaultStyle={{
-                  padding: "24px 0px",
-                  borderRadius: "0px",
-                  border: 0,
-                  gap: "12px",
-                  height: "100%",
-                }}
-                styleNoItems={{
-                  width: "200px",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                }}
-                listItemStyle={{
-                  width: "200px",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="container" style={buttonContainerStyle}>
-                <BasicButton
-                  onClick={handleClickB}
-                  value="Add new item to list"
-                  bStyle={{ width: "100%", textAlign: "center" }}
-                />
-                <AdvanceButton
-                  onClick={handleClickA}
-                  value="Delete last item from list"
-                  ref={aButtonRef}
-                />
-              </div>
-            </div>
-            <div className="container" style={containerStyle}>
-              <AdvanceList
-                onClick={() => {}}
-                listClick={() => {}}
-                listObjectsProp={aListObjects}
-                setListObjectsProp={aSetListObjects}
-                draggable={true}
-                defaultStyle={{
-                  padding: "24px 0px",
-                  borderRadius: "0px",
-                  border: 0,
-                  gap: "12px",
-                  height: "fit-content",
-                }}
-                styleNoItems={{
-                  minWidth: "200px",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                }}
-                listItemStyle={{
-                  minWidth: "200px",
-                  padding: "12px 24px 12px 12px",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                }}
-                ref={aListRef}
-              >
-                {Object.keys(aListObjects).map((listItem) => {
-                  return (
-                    <div key={listItem} className="custom-list-item">
-                      <img
-                        src={`https://picsum.photos/200/300`}
-                        alt="lorem"
-                        className="test-image"
-                      />
-                      {aListObjects[parseInt(listItem)]}
-                    </div>
-                  );
-                })}
-              </AdvanceList>
-              <div className="container" style={buttonContainerStyle}>
-                <BasicButton
-                  onClick={aHandleClickB}
-                  value="Add new item to list"
-                  bStyle={{ width: "100%", textAlign: "center" }}
-                />
-                <AdvanceButton
-                  onClick={aHandleClickA}
-                  value="Delete last item from list"
-                  ref={bButtonRef}
-                />
-              </div>
-            </div>
-
-            <BasicInputs
-              listStates={[input, setInput]}
-              bStyle={{
-                padding: "12px 24px 12px 12px",
-                borderRadius: "8px",
-                border: "1px solid black",
-              }}
-              placeholder="Add to this list..."
+            <BasicToggle
+              toggleState={toggleState}
+              setToggleState={setToggleState}
             />
           </>
         )}
