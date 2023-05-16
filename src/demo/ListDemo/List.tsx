@@ -478,7 +478,7 @@ export const ListDemo = () => {
               setListObjectsProp={aSetListObjects}
               draggable={true}
               defaultStyle={{
-                padding: "24px 0px",
+                padding: "24px 12px",
                 borderRadius: "0px",
                 border: 0,
                 gap: "12px",
@@ -488,13 +488,12 @@ export const ListDemo = () => {
                 minWidth: "200px",
                 padding: "12px 24px 12px 12px",
                 borderRadius: "6px",
-                outline: "1px dashed black",
+                outline: "1px solid black",
                 backgroundColor: "white",
               }}
               ref={aListRef}
             >
               {Object.keys(aListObjects).map((listItem) => {
-                console.log(aListObjects);
                 return (
                   <div key={listItem} className="custom-list-item">
                     <img
