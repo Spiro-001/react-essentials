@@ -4,13 +4,15 @@ import $ from "jquery";
 import "./BasicToggle.css";
 
 type BasicToggleProp = {
-  bStyle?: React.CSSProperties;
+  toggleContainerStyle?: React.CSSProperties;
+  toggleButtonStyle?: React.CSSProperties;
   toggleState: boolean;
   setToggleState: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const BasicToggle = ({
-  bStyle,
+  toggleContainerStyle,
+  toggleButtonStyle,
   toggleState,
   setToggleState,
 }: BasicToggleProp) => {
@@ -108,8 +110,13 @@ export const BasicToggle = ({
   }, []);
 
   return (
-    <div className="toggle-container" ref={toggleContainerRef}>
+    <div
+      className="toggle-container"
+      ref={toggleContainerRef}
+      style={toggleContainerStyle}
+    >
       <span
+        style={toggleButtonStyle}
         ref={toggleCircleRef}
         className="toggle-circle"
         onClick={(event) => handleToggleClick(event)}

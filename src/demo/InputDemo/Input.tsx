@@ -149,7 +149,7 @@ export const InputDemo = () => {
 
   return (
     <>
-      <Nav options={{ "/": "Home", docs: "Docs" }} />
+      <Nav options={{ "/": "Home", "/docs": "Docs" }} />
       <div className="background-b">
         <SideNav
           options={{

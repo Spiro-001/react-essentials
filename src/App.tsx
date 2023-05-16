@@ -6,6 +6,7 @@ import { Docs } from "./demo/Docs/Docs";
 import { Home } from "./demo/Home/Home";
 import { InputDemo } from "./demo/InputDemo/Input";
 import { ListDemo } from "./demo/ListDemo/List";
+import { ToggleDemo } from "./demo/ToggleDemo/Toggle";
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
           </Route>
           <Route exact path={"/docs/lists"}>
             <ListDemo />
+          </Route>
+          <Route exact path={"/docs/toggles"}>
+            <ToggleDemo />
           </Route>
           <Route exact path={"/docs"}>
             <Docs />

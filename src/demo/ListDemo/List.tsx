@@ -184,7 +184,7 @@ export const ListDemo = () => {
   };
 
   return (
-    <>
+    <div className="container-demo bwgap">
       <div className="container" style={containerStyle}>
         <BasicList
           onClick={() => {}}
@@ -241,7 +241,7 @@ export const ListDemo = () => {
           placeholder="Add to this list..."
         />
       </div>
-    </>
+    </div>
   )
   `;
 
@@ -280,76 +280,78 @@ export const ListDemo = () => {
   };
 
   return (
-    <div className="container" style={containerStyle}>
-      <AdvanceList
-        onClick={() => {}}
-        listClick={() => {}}
-        listObjectsProp={aListObjects}
-        setListObjectsProp={aSetListObjects}
-        draggable={true}
-        defaultStyle={{
-          padding: "24px 0px",
-          borderRadius: "0px",
-          border: 0,
-          gap: "12px",
-          height: "fit-content",
-        }}
-        listItemStyle={{
-          minWidth: "200px",
-          padding: "12px 24px 12px 12px",
-          borderRadius: "6px",
-          outline: "1px dashed black",
-          backgroundColor: "white",
-        }}
-        ref={aListRef}
-      >
-        {Object.keys(aListObjects).map((listItem) => {
-          return (
-            <div key={listItem} className="custom-list-item">
-              <img
-                src={https://picsum.photos/200/300}
-                alt="lorem"
-                className="test-image"
-              />
-              {aListObjects[parseInt(listItem)]}
-            </div>
-          );
-        })}
-      </AdvanceList>
-    </div>
-    <div className="container" style={buttonContainerStyle}>
-      <BasicButton
-        onClick={aHandleClickB}
-        value="Add new item to list"
-        bStyle={{
-          width: "100%",
-          textAlign: "center",
-          border: "0",
-          boxShadow:
-            "0px 2px 2px rgba(221, 170, 88, 0.8), 0px 3px 2px rgba(202, 143, 50, 0.8)",
-        }}
-      />
-      <AdvanceButton
-        onClick={aHandleClickA}
-        value="Delete last item from list"
-        ref={bButtonRef}
-        bStyle={{
-          width: "100%",
-          textAlign: "center",
-          border: "0",
-          boxShadow:
-            "0px 2px 2px rgba(221, 170, 88, 0.8), 0px 3px 2px rgba(202, 143, 50, 0.8)",
-        }}
-      />
-      <BasicInputs
-        listStates={[cInput, cSetInput]}
-        bStyle={{
-          padding: "12px 24px 12px 12px",
-          borderRadius: "8px",
-          border: "0",
-        }}
-        placeholder="Add to this list..."
-      />
+    <div className="container-demo bwgap">
+      <div className="container" style={containerStyle}>
+        <AdvanceList
+          onClick={() => {}}
+          listClick={() => {}}
+          listObjectsProp={aListObjects}
+          setListObjectsProp={aSetListObjects}
+          draggable={true}
+          defaultStyle={{
+            padding: "24px 0px",
+            borderRadius: "0px",
+            border: 0,
+            gap: "12px",
+            height: "fit-content",
+          }}
+          listItemStyle={{
+            minWidth: "200px",
+            padding: "12px 24px 12px 12px",
+            borderRadius: "6px",
+            outline: "1px dashed black",
+            backgroundColor: "white",
+          }}
+          ref={aListRef}
+        >
+          {Object.keys(aListObjects).map((listItem) => {
+            return (
+              <div key={listItem} className="custom-list-item">
+                <img
+                  src={https://picsum.photos/200/300}
+                  alt="lorem"
+                  className="test-image"
+                />
+                {aListObjects[parseInt(listItem)]}
+              </div>
+            );
+          })}
+        </AdvanceList>
+      </div>
+      <div className="container" style={buttonContainerStyle}>
+        <BasicButton
+          onClick={aHandleClickB}
+          value="Add new item to list"
+          bStyle={{
+            width: "100%",
+            textAlign: "center",
+            border: "0",
+            boxShadow:
+              "0px 2px 2px rgba(221, 170, 88, 0.8), 0px 3px 2px rgba(202, 143, 50, 0.8)",
+          }}
+        />
+        <AdvanceButton
+          onClick={aHandleClickA}
+          value="Delete last item from list"
+          ref={bButtonRef}
+          bStyle={{
+            width: "100%",
+            textAlign: "center",
+            border: "0",
+            boxShadow:
+              "0px 2px 2px rgba(221, 170, 88, 0.8), 0px 3px 2px rgba(202, 143, 50, 0.8)",
+          }}
+        />
+        <BasicInputs
+          listStates={[cInput, cSetInput]}
+          bStyle={{
+            padding: "12px 24px 12px 12px",
+            borderRadius: "8px",
+            border: "0",
+          }}
+          placeholder="Add to this list..."
+        />
+      </div>
     </div>
   );
   `;

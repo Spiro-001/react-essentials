@@ -11,6 +11,7 @@ import { AdvanceList } from "./react-essentials/Lists/AdvanceList/AdvanceList";
 import Fox from "./fox.webp";
 import gsap from "gsap";
 import { BasicToggle } from "./react-essentials/Toggles/BasicToggle/BasicToggle";
+import { AdvanceToggle } from "./react-essentials/Toggles/AdvanceToggle/AdvanceToggle";
 
 export const Demo = () => {
   const aButtonRef = useRef<HTMLDivElement>(null);
@@ -109,6 +110,7 @@ export const Demo = () => {
   };
 
   const [toggleState, setToggleState] = useState<boolean>(true);
+  const [bToggleState, bSetToggleState] = useState<boolean>(false);
 
   return (
     <>
@@ -118,8 +120,51 @@ export const Demo = () => {
         {!locked && (
           <>
             <BasicToggle
+              toggleButtonStyle={{ height: "40px", width: "40px" }}
+              toggleContainerStyle={{
+                height: "50px",
+                width: "100px",
+                borderRadius: "500px",
+              }}
               toggleState={toggleState}
               setToggleState={setToggleState}
+            />
+            <AdvanceToggle
+              toggleButtonStyle={{
+                height: "40px",
+                width: "40px",
+                backgroundColor: "#545454",
+              }}
+              toggleContainerStyle={{
+                height: "50px",
+                width: "100px",
+                borderRadius: "500px",
+                backgroundColor: "transparent",
+                boxShadow: "none",
+                boxSizing: "border-box",
+              }}
+              toggleButtonAnimation={[
+                { backgroundColor: "#545454" },
+                {
+                  backgroundColor: "white",
+                  duration: 0.3,
+                  ease: "power4.inOut",
+                },
+              ]}
+              toggleContainerAnimation={[
+                {
+                  backgroundColor: "transparent",
+                  border: "2px solid #545454",
+                },
+                {
+                  backgroundColor: "#006AFF",
+                  duration: 0.3,
+                  border: "2px solid #006AFF",
+                  ease: "power4.inOut",
+                },
+              ]}
+              toggleState={bToggleState}
+              setToggleState={bSetToggleState}
             />
           </>
         )}
