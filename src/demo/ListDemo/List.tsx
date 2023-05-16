@@ -549,7 +549,7 @@ export const ListDemo = () => {
 
   return (
     <>
-      <Nav options={{ "/": "Home", docs: "Docs" }} />
+      <Nav options={{ "/": "Home", "/docs": "Docs" }} />
       <div className="background-b">
         <SideNav
           options={{

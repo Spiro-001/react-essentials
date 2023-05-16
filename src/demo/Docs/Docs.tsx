@@ -12,6 +12,7 @@ export const Docs = () => {
     Buttons: "Basic Button and Advanced Button",
     Inputs: "Basic Input and Advanced Input and Search Bar",
     Lists: "Basic List and Advanced List",
+    Toggles: "Basic Toggle and Advanced Toggle",
     Menus: "Basic Menu and Advanced Menu",
     Forms: "Basic Forms and Advanced Forms",
     Appointments: "Basic Appointments and Advanced Appointments",
