@@ -248,10 +248,10 @@ export const ListDemo = () => {
   const codeSnippetAL = `
   const aButtonRef = useRef<HTMLDivElement>(null);
   const [aListObjects, aSetListObjects] = useState<Record<number, string>>({
-    1: "Doug",
-    2: "Charles",
-    3: "Ryan",
-    4: "Mark",
+    1: "James Laur",
+    2: "Malcolm Sultz",
+    3: "Ricky White",
+    4: "Mark Hale",
   });
   const [cInput, cSetInput] = useState<string | null>("");
 

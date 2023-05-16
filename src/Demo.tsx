@@ -32,7 +32,7 @@ export const Demo = () => {
     4: "Mark Hale",
   });
 
-  const [locked, setLocked] = useState<boolean>(false);
+  const [locked, setLocked] = useState<boolean>(true);
   const [password, setPassword] = useState<string>("");
   const [input, setInput] = useState<string | null>("");
 

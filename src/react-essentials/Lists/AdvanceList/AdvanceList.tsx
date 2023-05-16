@@ -170,7 +170,6 @@ export const AdvanceList = forwardRef<HTMLDivElement, AdvanceListProp>(
                 maxX: maxX - clientWidth + 1,
               },
               minimumMovement: 0,
-              zIndexBoost: false,
               onDragStart: (event) => handleItemDragStart(event),
               onDrag: (event) => handleItemDrag(event),
               onDragEnd: (event) => handleItemDrop(event),
